@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "chokidar": "^2.0.3",
+    "colors": "^1.2.1",
+    "express": "^4.16.3",
+    "fs-extra": "^5.0.0",
+    "lodash": "^4.17.5",
+    "memory-fs": "^0.4.1",
+    "moment": "^2.22.0",
+    "node-sass": "^4.8.3",
+    "socket.io": "^2.1.0"
+  },
+  "scripts": {
+    "start": "index.js",
+    "dev": "node index.js --env dev",
+    "prod": "node index.js --env prod",
+    "test": "mocha --testing --recursive ./tests/"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2"
+  }
+}
