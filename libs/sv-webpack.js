@@ -34,8 +34,6 @@ function run(cbWarnings) {
 			const fileChanged = SELF.fileChanged.replace('[name].js', asset.name);
 			$$$.io.emit('file-changed', fileChanged);
 
-			trace(fileChanged);
-
 			_then(stats);
 		});
 	});

@@ -3,7 +3,6 @@
  */
 const sass = require('node-sass');
 const path = require('path');
-const fs = require('fs-extra');
 const moment = require('moment');
 const sassRegex = /\.s(a|c)ss$/;
 
@@ -14,7 +13,6 @@ function SELF() {
 	let lastCompiled = 0;
 
 	function renderInMemory(dir) {
-
 		const cssPath = path.resolve(cssStyles.replace(sassRegex, '.css')).fixSlash();
 
 		var now = new Date().getTime();
@@ -25,7 +23,7 @@ function SELF() {
 
 		$$$.memFS.mkdirpSync(cssPath.toPath().dir);
 
-		sass.render({file: cssStyles}, //, includePaths: [cssShared]
+		sass.render({file: cssStyles},
 			(err, result) => {
 				if(err) throw err;
 

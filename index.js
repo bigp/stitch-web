@@ -14,6 +14,7 @@ require('./libs/restarter')(null, () => {
 	$$$.memFS = new MFS();
 	$$$.web = require('./libs/sv-web')(config);
 	$$$.watcher = require('./libs/sv-watcher')(config);
+	$$$.autoOpen = require('./libs/sv-auto-open')(config);
 	$$$.sass = require('./libs/sv-sass-compile')();
 	$$$.webpack = require('./libs/sv-webpack')(wpConfig);
 

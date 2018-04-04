@@ -1,29 +1,50 @@
+const fs = require('fs-extra');
 const express = require('express');
 const app = express();
 const http = require('http');
+const mime = require('mime-types');
 const server = http.createServer(app);
 const socketIO = require('socket.io');
 const sockets = [];
 const handlers = [];
-const debug = 0;
+
+function debug() {
+	//trace.apply(null, arguments);
+}
 
 function SELF(config) {
-	const webConfig = config.web;
-	const ioConfig = config.io;
 	SELF.app = app;
 	SELF.express = express;
 	SELF.server = server;
 
-	SELF.setupIO(ioConfig || {});
+	SELF.initSocketIO(config.io || {});
 
+	const webConfig = config.web;
 	SELF.setupRoutes(webConfig.routes);
 
-	webConfig.onError && app.use(webConfig.onError);
-	
-	SELF.listen(webConfig.port);
+	process.nextTick(() => {
+		app.use(webConfig.onError || SELF.onError);
+
+		SELF.listen(webConfig.port);
+	});
 
 	return SELF;
 }
+
+SELF.onError = (err, req, res, next) => {
+	trace(err);
+	res.status(404).send();
+};
+
+SELF.serveFromMemory = function(req, res, next) {
+	const localURI = $$$.paths.public + req.url.split('?')[0];
+	if(!req.url.has('.') || !$$$.memFS.existsSync(localURI)) {
+		return next();
+	}
+
+	res.contentType(mime.lookup(localURI));
+	return res.send($$$.memFS.readFileSync(localURI));
+};
 
 SELF.setupRoutes = function(routes) {
 	function _applyRoute(parent, route, routeKey, routeObj) {
@@ -34,12 +55,12 @@ SELF.setupRoutes = function(routes) {
 
 		if(_.isString(routeObj)) {
 			if(routeKey.has('.')) {
-				debug && trace("ROUTE DIRECT FILE: " + routeObj);
+				debug("ROUTE DIRECT FILE: " + routeObj);
 				return route.get(routeKey, (req, res, next) => {
 					res.sendFile(routeObj);
 				});
 			} else {
-				debug && trace("ROUTE STATIC DIR: " + routeObj);
+				debug("ROUTE STATIC DIR: " + routeObj);
 				return route.use(express.static(routeObj));
 			}
 		}
@@ -52,19 +73,19 @@ SELF.setupRoutes = function(routes) {
 		const method = routeArr.length===1 ? 'get' : routeArr[0].toLowerCase();
 		const subPath = routeArr.length===1 ? routeArr[0] : routeArr[1];
 
-		debug && trace("ROUTE MIDDLEWARE: " + method.toUpperCase() + "::" + subPath);
+		debug("ROUTE MIDDLEWARE: " + method.toUpperCase() + "::" + subPath);
 		route[method](subPath, routeObj);
 	}
 
 	function _recursive(parent, path, routes) {
 		const route = express.Router();
-		debug && trace("ROUTE: " + path);
+		debug("ROUTE: " + path);
 
 		_.keys(routes).forEach(routeKey => {
 			const routeObj = routes[routeKey];
 
 			if(_.isArray(routeObj)) {
-				debug && trace("ROUTE ARRAY: " + routeObj.length);
+				debug("ROUTE ARRAY: " + routeObj.length);
 				return routeObj.forEach(obj => _applyRoute(parent, route, routeKey, obj));
 			}
 
@@ -83,26 +104,26 @@ SELF.setupRoutes = function(routes) {
 
 SELF.listen = function(port) {
 	server.listen(port || 3000, () => {
-		console.log(`STARTED SERVER ON PORT ${port} ...`.yellow);
+		trace(`STARTED SERVER ON PORT ${port} ...`.yellow);
 	});
 
 	return SELF;
 };
 
-SELF.setupIO = function(config) {
+SELF.initSocketIO = function(config) {
 	const io = SELF.io = $$$.io = socketIO(server, config);
 
 	io.on('connection', socket => {
 		sockets.push(socket);
 
-		debug && trace("Connected: ".yellow + socket.id);
+		debug("Connected: ".yellow + socket.id);
 
 		SELF.applyHandlers(socket);
 
 		socket.on('disconnect', () => {
 			sockets.remove(socket);
 
-			debug && trace("Disconnected: ".red + socket.id);
+			debug("Disconnected: ".red + socket.id);
 		});
 	});
 };

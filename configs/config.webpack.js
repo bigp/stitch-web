@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 module.exports = {
 	entry: {
 		bundle: [$$$.paths.public + '/js/entry.js']

@@ -2,6 +2,12 @@
  * Created by Chamberlain on 3/30/2018.
  */
 import '../../libs/extensions';
-import './setup';
+import autoOpen from './auto-open';
 
-trace("entry.js: YAYE!");
+$$$(() => {
+	$$$.io = io();
+
+	autoOpen();
+
+	trace("entry.js: YAYE!");
+});
