@@ -7,14 +7,12 @@ module.exports = {
         routes: {
 			'/js/extensions.js': $$$.paths.libs + '/extensions.js',
 			'^': [
-				(req, res, next) => $$$.web.serveFromMemory(req, res, next),
-				$$$.paths.public, //STATIC
+				'*MEMORY*',
+				$$$.paths.public,
 			],
 
 			'/test': {
-				'/'(req, res, next) {
-					res.send('test');
-				}
+				'/': "test"
 			},
 		}
     },

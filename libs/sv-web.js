@@ -5,27 +5,26 @@ const http = require('http');
 const mime = require('mime-types');
 const server = http.createServer(app);
 const socketIO = require('socket.io');
-const sockets = [];
-const handlers = [];
 
 function debug() {
 	//trace.apply(null, arguments);
 }
 
 function SELF(config) {
+	if(!config.web) throw 'Missing "config.web" field in configuration file.';
+
 	SELF.app = app;
 	SELF.express = express;
 	SELF.server = server;
 
-	SELF.initSocketIO(config.io || {});
+	SELF.ioInit(config.io || {});
 
-	const webConfig = config.web;
-	SELF.setupRoutes(webConfig.routes);
+	SELF.setupRoutes(config.web.routes);
 
 	process.nextTick(() => {
-		app.use(webConfig.onError || SELF.onError);
+		app.use(config.web.onError || SELF.onError);
 
-		SELF.listen(webConfig.port);
+		SELF.listen(config.web.port);
 	});
 
 	return SELF;
@@ -47,54 +46,53 @@ SELF.serveFromMemory = function(req, res, next) {
 };
 
 SELF.setupRoutes = function(routes) {
-	function _applyRoute(parent, route, routeKey, routeObj) {
-		if(routeKey==='^') {
-			routeKey = '/*';
-			route = app;
-		}
-
-		if(_.isString(routeObj)) {
-			if(routeKey.has('.')) {
-				debug("ROUTE DIRECT FILE: " + routeObj);
-				return route.get(routeKey, (req, res, next) => {
-					res.sendFile(routeObj);
-				});
-			} else {
-				debug("ROUTE STATIC DIR: " + routeObj);
-				return route.use(express.static(routeObj));
-			}
-		}
-
-		if(!_.isFunction(routeObj)) {
-			return _recursive(route, routeKey, routeObj);
-		}
-
-		const routeArr = routeKey.split('::');
-		const method = routeArr.length===1 ? 'get' : routeArr[0].toLowerCase();
-		const subPath = routeArr.length===1 ? routeArr[0] : routeArr[1];
-
-		debug("ROUTE MIDDLEWARE: " + method.toUpperCase() + "::" + subPath);
-		route[method](subPath, routeObj);
-	}
-
 	function _recursive(parent, path, routes) {
-		const route = express.Router();
 		debug("ROUTE: " + path);
+		let router = express.Router();
 
 		_.keys(routes).forEach(routeKey => {
-			const routeObj = routes[routeKey];
+			let routeObj = routes[routeKey];
 
-			if(_.isArray(routeObj)) {
-				debug("ROUTE ARRAY: " + routeObj.length);
-				return routeObj.forEach(obj => _applyRoute(parent, route, routeKey, obj));
+			if(!_.isArray(routeObj)) routeObj = [routeObj];
+			if(routeKey==='^') {
+				routeKey = '/*';
+				router = app;
 			}
 
-			_applyRoute(parent, route, routeKey, routeObj);
+			routeObj.forEach(obj => {
+				if(_.isString(obj)) {
+					if(obj.toUpperCase()==='*MEMORY*') {
+						debug("ROUTE FROM MEMORY: " + routeKey);
+						return router.get(routeKey, SELF.serveFromMemory);
+					} else if(routeKey.has('.')) {
+						debug("ROUTE DIRECT FILE: " + routeKey);
+						return router.get(routeKey, (req, res, next) => {
+							res.sendFile(obj);
+						});
+					} else if(fs.existsSync(obj)) {
+						debug("ROUTE STATIC DIR: " + obj);
+						return router.use(express.static(obj));
+					} else {
+						debug("ROUTE STRING: " + obj);
+						return router.get(routeKey, (req, res, next) => res.send(obj));
+					}
+				}
+
+				if(!_.isFunction(obj)) return _recursive(router, routeKey, obj);
+
+				const routeArr = routeKey.split('::');
+				const method = routeArr.length===1 ? 'get' : routeArr[0].toLowerCase();
+				const subPath = routeArr.length===1 ? routeArr[0] : routeArr[1];
+
+				debug("ROUTE MIDDLEWARE: " + method.toUpperCase() + "::" + subPath);
+				router[method](subPath, obj);
+			});
 		});
 
+		if(parent===router) return;
+
 		//Attach the route to the APP or PARENT-ROUTE:
-		if(parent==route) return;
-		parent.use(path, route);
+		parent.use(path, router);
 	}
 
 	_recursive(app, '/', routes);
@@ -110,32 +108,30 @@ SELF.listen = function(port) {
 	return SELF;
 };
 
-SELF.initSocketIO = function(config) {
+SELF.ioInit = function(config) {
 	const io = SELF.io = $$$.io = socketIO(server, config);
+	SELF.sockets = [];
+	SELF.handlers = [];
 
 	io.on('connection', socket => {
-		sockets.push(socket);
+		SELF.sockets.push(socket);
 
 		debug("Connected: ".yellow + socket.id);
 
-		SELF.applyHandlers(socket);
+		SELF.handlers.forEach(hd => socket.on(hd.event, hd.cb));
 
 		socket.on('disconnect', () => {
-			sockets.remove(socket);
+			SELF.sockets.remove(socket);
 
 			debug("Disconnected: ".red + socket.id);
 		});
 	});
 };
 
-SELF.addEvent = function(event, cb) {
-	handlers.push({event:event, cb:cb});
+SELF.ioAddEvent = function(event, cb) {
+	SELF.handlers.push({event:event, cb:cb});
 
-	sockets.forEach(socket => socket.on(event, cb));
-};
-
-SELF.applyHandlers = function(socket) {
-	handlers.forEach(hd => socket.on(hd.event, hd.cb));
+	SELF.sockets.forEach(socket => socket.on(event, cb));
 };
 
 module.exports = SELF;

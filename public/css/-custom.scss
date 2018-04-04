@@ -1,3 +1,82 @@
 body {
-  color: #f0f;
+  color: #222;
+}
+
+#topbar {
+  font-size: 120%;
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 40px;
+  //padding: 10px;
+  background: #777;
+  margin-bottom: 2px;
+}
+
+#menubar {
+  height: 100%;
+  //line-height: ;
+
+  b {
+    @include vbox();
+    float:left;
+    height: 100%;
+    padding: 0 10px 0 10px;
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    cursor: pointer;
+  }
+}
+
+#master {
+  position: absolute;
+  top: 40px;
+  padding: 10px;
+}
+
+.breadcrumb {
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 1px 1px 1px #000;
+
+  $colorOut: #0f0;
+  $colorOver: #0ff;
+
+  .primary {
+    background: $colorOut;
+    background: linear-gradient($colorOut, #000);
+  }
+
+  .primary:after {
+    background: $colorOut;
+    background: linear-gradient(135deg, $colorOut, #000);
+  }
+
+  .primary:hover {
+    background: $colorOver;
+    background: linear-gradient($colorOver, #000);
+  }
+
+  .primary.active:after, .primary:hover:after {
+    background: $colorOver;
+    background: linear-gradient(135deg, $colorOver, #000);
+  }
+}
+
+
+.crumb-1 {
+  font-weight: 500;
+  font-size: 150%;
+}
+
+.crumb-2 {
+  font-weight: bold;
+  font-size: 120%;
+}
+
+.crumb-3 {
+  font-weight: bold;
+  font-size: 110%;
+  background: #f00;
 }

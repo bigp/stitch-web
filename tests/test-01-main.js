@@ -1,6 +1,6 @@
 require('../libs/extensions');
 
-doTest('test', {
+test('test', {
     'should pass'() {
         assert.isTrue(1==1);
     }
