@@ -19,23 +19,24 @@
 </head>
 <body>
 
-<div id="topbar">
-    <ul class="breadcrumb">
-        <li class="crumb-1 primary"><a href="#">Designer</a></li>
-        <li class="crumb-1"><a href="#">EFNS</a></li>
-        <li class="crumb-2"><a href="#">Mercury Register</a></li>
-        <li class="crumb-3"><a href="#">en_300x250_1234-01_Campaign_c01<br/>50KB</a></li>
-    </ul>
-    <div id="menubar">
-        <b>Other</b>
-        <b>Shit</b>
-        <b>Here</b>
+<div id="app">
+    <div id="topbar">
+        <ul class="breadcrumb">
+            <li class="crumb-1 primary" @click='onMenuClick'>{{menuTitle}}</li>
+            <li :class="'crumb-' + i" v-for="(menu, i) in current.menus" v-html=menu.name></li>
+        </ul>
+        <div id="menubar">
+            <b>1</b>
+            <b>2</b>
+            <b>3</b>
+            <b>{{title}}</b>
+        </div>
+    </div>
+
+    <div id="master">
+        {{lorem}}
     </div>
 </div>
-<div id="master">
-    master
-</div>
-
 
 <script src="dist/bundle.js"></script>
 

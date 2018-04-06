@@ -21,7 +21,7 @@ body {
     @include vbox();
     float:left;
     height: 100%;
-    padding: 0 10px 0 10px;
+    padding: 0 15px 0 15px;
     &:hover {
       background: rgba(255, 255, 255, 0.2);
     }
@@ -65,17 +65,17 @@ body {
 }
 
 
-.crumb-1 {
+.crumb-0 {
   font-weight: 500;
   font-size: 150%;
 }
 
-.crumb-2 {
+.crumb-1 {
   font-weight: bold;
   font-size: 120%;
 }
 
-.crumb-3 {
+.crumb-2 {
   font-weight: bold;
   font-size: 110%;
   background: #f00;
