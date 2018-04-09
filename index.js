@@ -3,7 +3,7 @@ global.$$$ = new Events();
 global._ = require('lodash');
 require('./libs/extensions');
 
-require('./libs/restarter')(null, () => {
+require('./libs/sv-restarter')(null, () => {
 	$$$.paths = require('./libs/sv-paths');
 
 	const config = require($$$.paths.configs + '/config');

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./css/styles.css" hot-reload="1">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/EaselJS/1.0.2/easeljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.8/howler.min.js"></script>
@@ -20,21 +21,31 @@
 <body>
 
 <div id="app">
-    <div id="topbar">
+    <ul id="top-bar">
         <ul class="breadcrumb">
-            <li class="crumb-1 primary" @click='onMenuClick'>{{menuTitle}}</li>
-            <li :class="'crumb-' + i" v-for="(menu, i) in current.menus" v-html=menu.name></li>
-        </ul>
-        <div id="menubar">
-            <b>1</b>
-            <b>2</b>
-            <b>3</b>
-            <b>{{title}}</b>
-        </div>
-    </div>
+            <li v-for="(menu, i) in menus"
+                v-html="menu.name"
+                :class="'crumb cr-' + i"
+                :style="getMenuCSS(menu)"
+                @click='onMenuClick(menu)'>
 
-    <div id="master">
-        {{lorem}}
+            </li>
+        </ul>
+        <ul id="menu-bar">
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>{{title}}</li>
+        </ul>
+        <ul id="right-bar">
+            <li>right</li>
+        </ul>
+        <div id="mode-selector" class="center-box">
+            mode-selector
+        </div>
+    </ul>
+
+    <div id="master" v-html="helpers.lorem">
     </div>
 </div>
 

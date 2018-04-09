@@ -1,0 +1,49 @@
+.breadcrumb {
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 1px 1px 1px #000;
+
+  $colorOut: #0f0;
+  $colorOver: #0ff;
+
+  .primary.active:after, .primary:hover:after {
+    background: $colorOver;
+    background: linear-gradient(135deg, $colorOver, #000);
+  }
+
+  .cr-0, .cr-1, .cr-2 { font-weight: bold; }
+  .cr-0 { font-size: 150%; }
+  .cr-1 { font-size: 120%; }
+  .cr-2 { font-size: 110%; }
+
+  .cr-single {
+    padding-right: 20px;
+  }
+
+  li {
+    --crumbColor: #f00;
+    --crumbColorHover: #f80;
+
+    transform-style: flat;
+
+    background: var(--crumbColor);
+    background: linear-gradient(180deg, var(--crumbColor), #333);
+
+    &:after {
+      transform-style: flat;
+      background: var(--crumbColor);
+      background: linear-gradient(135deg, var(--crumbColor), #333);
+    }
+
+    /*hover/active styles*/
+    &.active, &:hover {
+      background: var(--crumbColorHover);
+      background: linear-gradient(180deg, var(--crumbColorHover), #333);
+    }
+
+    &.active:after, &:hover:after {
+      background: var(--crumbColorHover);
+      background: linear-gradient(135deg, var(--crumbColorHover), #333);
+    }
+  }
+}
