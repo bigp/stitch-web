@@ -8,13 +8,9 @@ Hey there! This project is intended to help Ad Developers produce their plethora
 Planning / Sketches / Screenshots:
 ----------------------------------
 
-<kbd>
-![Early Demo of stitch-web](https://raw.githubusercontent.com/bigp/stitch-web/master/docs/imgs/stitch-web-demo-01.gif | width=450)
-</kbd>
+> ![Early Demo of stitch-web](https://raw.githubusercontent.com/bigp/stitch-web/master/docs/imgs/stitch-web-demo-01.gif | width=450)
 
-<kbd>
-![Sketch Planning for stitch-web, made with Paper by 53](https://raw.githubusercontent.com/bigp/stitch-web/master/docs/imgs/stitch-web-sketch.png | width=450)
-</kbd>
+> ![Sketch Planning for stitch-web, made with Paper by 53](https://raw.githubusercontent.com/bigp/stitch-web/master/docs/imgs/stitch-web-sketch.png | width=450)
 
 Goals
 -----
