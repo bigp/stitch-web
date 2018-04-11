@@ -1,10 +1,8 @@
-import topmenus from '../data/db-topmenus';
-
 /**
  * Created by Chamberlain on 4/6/2018.
  */
 export default function SELF(config) {
-	SELF.reset(SELF.topmenus[0]);
+	return SELF;
 }
 
 $(document).keydown( e => {
@@ -14,8 +12,18 @@ $(document).keydown( e => {
 	}
 });
 
+const CRUMB_0 = '.breadcrumb .cr-0';
+
 _.extend(SELF, {
-	topmenus: topmenus,
+	topmenus: topmenus(),
+
+	init() {
+		const routeName = $$$.router.currentRoute.path.split('/')[1];
+		const first = SELF.topmenus.find(m => m.name.toLowerCase()===routeName);
+		SELF.reset(first);
+
+		//first.cb(first, true);
+	},
 
 	reset(menus) {
 		$$$.vue.menus = _.castArray(menus || []);
@@ -29,7 +37,11 @@ _.extend(SELF, {
 
 	popMenu() {
 		if($$$.vue.menus.length===1) {
-			return TweenMax.fromTo('.breadcrumb .cr-0', 0.5, {css: {color:'#f00'}}, {css: {color:'#fff'}, ease:Bounce.easeOut});
+			return TweenMax.fromTo(
+				CRUMB_0,
+				0.5,
+				{css: {color:'#f00'}},
+				{css: {color:'#fff'}, ease: Bounce.easeOut });
 		}
 
 		$$$.vue.menus.pop();
@@ -37,11 +49,36 @@ _.extend(SELF, {
 	},
 
 	_fixStyle: $$$.deferOnce(() => {
-		const crumb = $('.breadcrumb .cr-0');
-		if($$$.vue.menus.length===1) {
-			crumb.addClass('cr-single');
-		} else {
-			crumb.removeClass('cr-single');
-		}
+		$(CRUMB_0).setClassIf('cr-single', $$$.vue.menus.length===1);
 	})
 });
+
+function topmenus() {
+	return [
+		{name: 'Project',  cb:onTopMenu, color: '#f80', icon: 'star', desc: 'Create and Manage your projects and clients.'},
+		{name: 'Designer', cb:onTopMenu, color: '#c08', icon: 'object-group', desc: 'Draw and Import assets into a project.'},
+		{name: 'Animator', cb:onTopMenu, color: '#0c8', icon: 'play-circle', desc: 'Bring your assets to life in a timeline interface.'},
+		{name: 'Invoices', cb:onTopMenu, color: '#08f', icon: 'file', desc: 'Bill your clients and get paid!'},
+	];
+}
+
+function onTopMenu(e, isSelected) {
+	const modeName = e.name.toLowerCase();
+	const modeSelected = $('#mode-selector').find('.mode-' + modeName);
+
+	$('#mode-selector .selected').removeClass('selected');
+
+
+	if(isSelected || $('#mode-selector').is(':visible')) {
+		if(isSelected) {
+			modeSelected.addClass('selected');
+			$$$.menu.reset(e);
+			$$$.router.push(modeName);
+		}
+		return $$$.fx.fadeOut('#mode-selector');
+	}
+
+	$$$.fx.fadeIn('#mode-selector');
+
+	modeSelected.addClass('selected');
+}

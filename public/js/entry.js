@@ -3,16 +3,27 @@
  */
 import '../../libs/extensions';
 import './helpers';
-import autoOpen from './auto-open';
-import vueSetup from './vue-setup';
-import menuSetup from './menu-setup';
+import './fx';
+import AUTO_OPEN from './auto-open';
+import VUE_SETUP from './vue-setup';
+import MENU_SETUP from './menu-setup';
 
 $$$(() => {
 	$$$.io = io();
 
-	vueSetup();
-	autoOpen();
-	menuSetup();
+	$$$.menu = MENU_SETUP();
 
-	//TweenMax.set('.center-box', )
+	VUE_SETUP();
+	AUTO_OPEN();
+
+	applySpecialSelectors();
+
+	$$$.menu.init();
 });
+
+function applySpecialSelectors() {
+	$$$.addEventAndExec('resize', () => $('.is-centered').center());
+
+	TweenMax.set('.init-hidden', {alpha:0});
+	$('.init-hidden').removeClass('init-hidden').hide();
+}

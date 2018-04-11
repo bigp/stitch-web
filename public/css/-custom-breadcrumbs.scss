@@ -11,39 +11,37 @@
     background: linear-gradient(135deg, $colorOver, #000);
   }
 
+  .cr-single { padding-right: 20px; }
   .cr-0, .cr-1, .cr-2 { font-weight: bold; }
-  .cr-0 { font-size: 150%; }
+  .cr-0 { font-size: 150%; width: 90px; .icon { margin-right: 5px; } }
   .cr-1 { font-size: 120%; }
   .cr-2 { font-size: 110%; }
 
-  .cr-single {
-    padding-right: 20px;
-  }
 
   li {
-    --crumbColor: #f00;
-    --crumbColorHover: #f80;
+    --bgColor: #f00;
+    --bgColorHover: #f80;
 
     transform-style: flat;
 
-    background: var(--crumbColor);
-    background: linear-gradient(180deg, var(--crumbColor), #333);
+    background: var(--bgColor);
+    background: linear-gradient(180deg, var(--bgColor), #333);
 
     &:after {
       transform-style: flat;
-      background: var(--crumbColor);
-      background: linear-gradient(135deg, var(--crumbColor), #333);
+      background: var(--bgColor);
+      background: linear-gradient(135deg, var(--bgColor), #333);
     }
 
     /*hover/active styles*/
     &.active, &:hover {
-      background: var(--crumbColorHover);
-      background: linear-gradient(180deg, var(--crumbColorHover), #333);
+      background: var(--bgColorHover);
+      background: linear-gradient(180deg, var(--bgColorHover), #333);
     }
 
     &.active:after, &:hover:after {
-      background: var(--crumbColorHover);
-      background: linear-gradient(135deg, var(--crumbColorHover), #333);
+      background: var(--bgColorHover);
+      background: linear-gradient(135deg, var(--bgColorHover), #333);
     }
   }
 }

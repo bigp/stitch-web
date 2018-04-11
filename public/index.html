@@ -22,34 +22,45 @@
 
 <div id="app">
     <ul id="top-bar">
-        <ul class="breadcrumb">
+        <ul class="breadcrumb pointer">
             <li v-for="(menu, i) in menus"
-                v-html="menu.name"
                 :class="'crumb cr-' + i"
                 :style="getMenuCSS(menu)"
                 @click='onMenuClick(menu)'>
-
+                <icon :name="menu.icon"></icon>
+                <i>{{menu.name}}</i>
             </li>
         </ul>
-        <ul id="menu-bar">
+        <ul id="menu-bar" class="pointer">
             <li>1</li>
             <li>2</li>
             <li>3</li>
             <li>{{title}}</li>
         </ul>
-        <ul id="right-bar">
-            <li>right</li>
+        <ul id="right-bar" class="pointer">
+            <icon name="question-circle"></icon>
+            <icon name="bug"></icon>
         </ul>
-        <div id="mode-selector" class="center-box">
-            mode-selector
-        </div>
     </ul>
 
-    <div id="master" v-html="helpers.lorem">
+    <div id="master">
+        <router-view></router-view>
+    </div>
+
+    <div id="mode-selector" class="box-shadow init-hidden is-centered">
+        <div v-for="(mode, i) in modes"
+             class="box pointer"
+             :class="'mode-' + mode.name.toLowerCase()"
+             :style="getMenuCSS(mode)"
+             @click="onModeSelected(mode)">
+
+            <i class="menu-name"><icon :name="mode.icon"></icon>{{mode.name}}</i>
+            <i class="menu-desc">{{mode.desc}}</i>
+        </div>
     </div>
 </div>
 
-<script src="dist/bundle.js"></script>
+<script src="dist/bundle.min.js"></script>
 
 </body>
 </html>

@@ -29,7 +29,6 @@ body {
     &:hover {
       background: rgba(255, 255, 255, 0.2);
     }
-    cursor: pointer;
   }
 }
 
@@ -40,9 +39,14 @@ body {
   right: 0px;
   left: auto;
   display: inline-block;
-  @include debug();
+  color: #fff;
 
-  li {
+  div {
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      text-shadow: 0 0 4px #000;
+    }
+
     @include vbox();
     float: right;
     padding: 0px 10px;
@@ -53,14 +57,74 @@ body {
   position: absolute;
   top: 40px;
   padding: 10px;
+  border: solid 2px #f00;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
 }
 
 #mode-selector {
   position: absolute;
   width: 600px;
   height: 400px;
-  margin: auto 0px;
-  background: #888;
+  margin-right: auto; margin-left: auto;
+  background: rgba(200, 200, 200, 0.9);
+  padding: 10px;
   @include border-radius(10px);
-  border: solid 2px #222;
+
+  display:grid;
+  grid-template-columns: 50% 50%;
+
+  .box {
+    --bgColor: #f00;
+    --bgColorHover: #f88;
+    @include border-radius(20px);
+    color:#fff;
+    padding: 10px;
+    margin: 10px;
+    font-size: 100%;
+    font-family:sans-serif;
+    background: linear-gradient(180deg, var(--bgColorHover), var(--bgColor));
+    border: solid 5px var(--bgColor);
+    text-shadow: 1px 1px 1px #000;
+    transition: transform 0.1s;
+
+    .menu-name {
+      .icon { display: inline; margin-right: 5px; line-height: 150%; }
+      display: block;
+      font-weight: bold;
+      font-size: 160%;
+      margin-bottom: 15px;
+      //text-decoration: underline;
+      border-bottom: dotted 1px rgba(255, 255, 255, 0.5);
+    }
+
+    &:hover {
+
+      transform: scale(1.02);
+      color: #fff;
+      border: solid 5px var(--bgColor);
+      background: linear-gradient(180deg, var(--bgColorHover), #fff);
+    }
+
+    &:hover i {
+      text-shadow: 2px 2px 4px #000 !important;
+    }
+  }
+
+  .selected {
+    border-color: #fff;
+  }
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.box-shadow {
+  box-shadow: 0px 2px 16px #000;
+}
+
+.init-hidden {
+  display: none !important;
 }

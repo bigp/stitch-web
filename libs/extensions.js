@@ -21,6 +21,9 @@
 				}
 				return false;
 			},
+			ext() {
+				return this.split('.').pop().toLowerCase()
+			},
 			remove(str) {
 				return this.replace(str, '');
 			},
