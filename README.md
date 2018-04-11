@@ -4,6 +4,17 @@ STITCH-WEB
 *(Hopefully the last attempt at publishing this sort of repo)*
 
 Hey there! This project is intended to help Ad Developers produce their plethora of HTML5 ads by providing an easy to use Front-End web interface.
+
+Planning / Sketches / Screenshots:
+----------------------------------
+
+![Early Demo of stitch-web](https://raw.githubusercontent.com/bigp/stitch-web/master/docs/imgs/stitch-web-demo-01.gif)
+
+![Sketch Planning for stitch-web, made with Paper by 53](https://raw.githubusercontent.com/bigp/stitch-web/master/docs/imgs/stitch-web-sketch.png)
+
+
+Goals
+-----
  
 The challenges that this project tries to address are:
 
