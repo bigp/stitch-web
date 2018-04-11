@@ -12,7 +12,7 @@ Planning / Sketches / Screenshots:
 <img src="https://raw.githubusercontent.com/bigp/stitch-web/master/docs/imgs/stitch-web-demo-01.gif" width=450 alt="Early Demo of stitch-web" />
 </kbd>
 
-<br/><br/>
+<br/>
 
 <kbd>
 <img src="https://raw.githubusercontent.com/bigp/stitch-web/master/docs/imgs/stitch-web-sketch.png" width=450 alt="Sketch Planning for stitch-web, made with Paper by 53" />
