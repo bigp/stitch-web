@@ -9,7 +9,9 @@ import VUE_SETUP from './vue-setup';
 import MENU_SETUP from './menu-setup';
 
 $$$(() => {
-	$$$.io = io();
+	$$$.io = io({
+		reconnection: false
+	});
 
 	$$$.menu = MENU_SETUP();
 

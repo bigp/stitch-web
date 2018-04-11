@@ -2,19 +2,35 @@
  * Created by Chamberlain on 4/4/2018.
  */
 
+const LIMIT = 20;
+const TIME_MS = 1000;
+
 export default function SELF() {
+	SELF._reattempts = 0;
 	SELF.autoOpenID = setInterval(() => {
 		const body = document.body;
+
+		if(SELF._reattempts>=LIMIT) {
+			if(SELF._reattempts===LIMIT) traceError("Too many reattempts: " + LIMIT);
+			return;
+		}
+
 		$.get({
 			url: '/auto-open-check',
 			success: data => {
+				if(SELF._reattempts>0) {
+					trace('[SOCKET.IO] Reconnecting...');
+					$$$.io.connect(); //() => trace('[socket.io] Reconnected!')
+				}
+				SELF._reattempts = 0;
 				TweenMax.to(body, 0.8, {alpha:1.0, scale:1.0, ease: Sine.easeOut});
 			},
 			error: err => {
+				SELF._reattempts++;
 				TweenMax.to(body, 0.8, {alpha:0.2, scale:0.9, ease: Sine.easeInOut});
 			}
 		});
-	}, 1000);
+	}, TIME_MS);
 
 	$$$.io.on('file-changed', file => {
 		const ext = (file || '').ext();

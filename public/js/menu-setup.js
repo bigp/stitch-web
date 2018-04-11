@@ -74,6 +74,8 @@ function onTopMenu(e, isSelected) {
 			modeSelected.addClass('selected');
 			$$$.menu.reset(e);
 			$$$.router.push(modeName);
+
+			TweenMax.fromTo('#master', 0.5, {alpha:0}, {alpha:1});
 		}
 		return $$$.fx.fadeOut('#mode-selector');
 	}
