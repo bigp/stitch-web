@@ -26,7 +26,7 @@ export default function SELF() {
 				});
 				break;
 			case 'html':
-			case 'vue':
+			case 'vue': trace("Vue file changed: " + file); break;
 			case 'js':
 				trace("FORCE RELOAD: " + file);
 				setTimeout(() => {

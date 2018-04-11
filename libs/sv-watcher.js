@@ -35,8 +35,10 @@ function SELF(config) {
 		if(event==='addDir' || path.has('_tmp_') || (event==='add' && timeDiff < 5000)) return;
 
 		if(event==='change' && hasPublic(path)) {
-			if(path.endsWith('.js')) {
-				$$$.webpack.run();
+			if(path.endsWith('.js') || path.endsWith('.vue')) {
+				$$$.webpack
+					.run()
+					.catch(err => traceError(err));
 			} else {
 				$$$.io.emit('file-changed', path);
 			}

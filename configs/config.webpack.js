@@ -4,8 +4,8 @@ const entry = $$$.paths.public + '/js/entry.js';
 
 module.exports = {
 	entry: {
-		//'bundle': entry,
-		'bundle.min': entry
+		'bundle': entry,
+		//'bundle.min': entry
 	},
 
 	output: {
@@ -21,6 +21,6 @@ module.exports = {
 	},
 
 	optimization: {
-		minimize: true,
+		minimize: false,
 	}
 }
