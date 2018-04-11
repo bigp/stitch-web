@@ -10,11 +10,11 @@ Planning / Sketches / Screenshots:
 
 <table>
 <tr><td>
-![Early Demo of stitch-web](https://raw.githubusercontent.com/bigp/stitch-web/master/docs/imgs/stitch-web-demo-01.gif | width=450)
+<img src="https://raw.githubusercontent.com/bigp/stitch-web/master/docs/imgs/stitch-web-demo-01.gif" width=450 alt="Early Demo of stitch-web" />
 </td></tr>
 
 <tr><td>
-![Sketch Planning for stitch-web, made with Paper by 53](https://raw.githubusercontent.com/bigp/stitch-web/master/docs/imgs/stitch-web-sketch.png | width=450)
+<img src="https://raw.githubusercontent.com/bigp/stitch-web/master/docs/imgs/stitch-web-sketch.png" width=450 alt="Sketch Planning for stitch-web, made with Paper by 53" />
 </td></tr>
 </table>
 Goals
