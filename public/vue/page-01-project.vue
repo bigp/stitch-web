@@ -28,9 +28,16 @@
    </div>
 
    <div v-if="campaign">
-    <goto :to="{name: 'invoices'}">Start Invoices Now!</goto><br/>
-    <goto :to="{name: 'designer'}">Start Designing Now!</goto><br/>
-    <goto :to="{name: 'animator'}">Start Animating Now!</goto><br/>
+    <nobr>
+     <h3>Launch in:</h3>
+    <i v-for="(menu, i) in topmenus">
+     <goto class="friendly-box"
+           :style="$root.getMenuCSS(menu)"
+           :to="getMenuRoute(menu)">
+       <icon :name="menu.icon"></icon> {{menu.name}}
+     </goto>
+    </i>
+    </nobr>
    </div>
 
   </outer>
@@ -47,7 +54,8 @@ const Recents = {
 			var obj = {};
 			obj[this.field] = item;
 			return obj;
-        }
+        },
+
     },
 
 	template: `<div>Recent {{label}}:
@@ -65,6 +73,16 @@ export default {
 		recentCampaigns: 'coffee,frozen drink,juice'.split(','),
 		recentAds: 'test1,test2,test3'.split(',')
     }),
+
+    computed: {
+    	topmenus: () => $$$.menu.topmenus.filter(m => m.name!=='Project')
+    },
+
+    methods: {
+		getMenuRoute(menu) {
+			return {name: menu.name.toLowerCase()};
+		}
+    },
 
     components: { Recents }
 }
