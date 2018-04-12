@@ -6,15 +6,13 @@ import './helpers';
 import './fx';
 import AUTO_OPEN from './auto-open';
 import VUE_SETUP from './vue-setup';
-import MENU_SETUP from './menu-setup';
 
 $$$(() => {
 	$$$.io = io({ reconnection: false });
-	$$$.menu = MENU_SETUP();
 	$$$.vue = VUE_SETUP();
 	$$$.autoOpen = AUTO_OPEN();
 
-	$$$.menu.init();
+	$$$.vue.$lookup('menu').init();
 
 	$$$.applySpecialSelectors();
 

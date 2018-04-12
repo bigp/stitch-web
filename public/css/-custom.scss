@@ -76,7 +76,7 @@ body {
   @include border-radius(10px);
 
   display:grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 100%;
 
   .box {
     @include border-radius(20px);

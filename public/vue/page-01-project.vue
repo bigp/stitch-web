@@ -7,7 +7,7 @@
   </outer>
 
   <!-- Right (main) Nav -->
-  <outer class="right-pane project-bg" :style="$root.getMenuCSS()">
+  <outer class="right-pane project-bg" :style="$app.getMenuCSS()">
    <Recents label="Brands" field="brand" :source="recentBrands"></Recents>
 
    <div v-if="brand">
@@ -30,10 +30,10 @@
    <div v-if="campaign">
     <nobr>
      <h3>Launch in:</h3>
-    <i v-for="(menu, i) in topmenus">
+    <i v-for="(menu, i) in menusExceptProject">
      <goto class="friendly-box"
-           :style="$root.getMenuCSS(menu)"
-           :to="getMenuRoute(menu)">
+           :style="$app.getMenuCSS(menu)"
+           :to="{name: menu.name.toLowerCase()}">
        <icon :name="menu.icon"></icon> {{menu.name}}
      </goto>
     </i>
@@ -75,18 +75,10 @@ export default {
     }),
 
     computed: {
-    	topmenus: () => $$$.menu.topmenus.filter(m => m.name!=='Project')
-    },
-
-    methods: {
-		getMenuRoute(menu) {
-			return {name: menu.name.toLowerCase()};
-		}
+    	menusExceptProject: () => $$$.menu.topmenus.filter(m => m.name!=='Project')
     },
 
     components: { Recents }
 }
-
-
 
 </script>

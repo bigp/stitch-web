@@ -1,5 +1,5 @@
 <template>
- <outer class="page page-invoices fullsize project-bg" :style="$root.getMenuCSS()">
+ <outer class="page page-invoices fullsize project-bg" :style="$app.getMenuCSS()">
   Invoices
 
   <div v-if="brand">

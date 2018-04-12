@@ -1,5 +1,5 @@
 <template>
- <outer class="page page-designer fullsize project-bg" :style="$root.getMenuCSS()">
+ <outer class="page page-designer fullsize project-bg" :style="$app.getMenuCSS()">
   <p>Designer panel</p>
 
   <div v-if="brand">

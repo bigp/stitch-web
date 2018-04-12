@@ -117,6 +117,12 @@
 
 			return result;
 		}
+
+		_.getset = (proto, obj) => {
+			_.forOwn(obj, (getset, key) => {
+				Object.defineProperty(proto, key, getset)
+			});
+		}
 	}
 
 	if(!isNode) {

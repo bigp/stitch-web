@@ -1,84 +1,4 @@
-import setupComponents from './vue-components';
-
-export default function SELF(config) {
-	setupComponents();
-
-	Vue.use(VueRouter);
-	Vue.config.devtools = true;
-
-	$$$.router = setupVueRouter();
-	$$$.getRouteName = () => $$$.router.currentRoute.path.split('/')[1];
-
-	return new Vue({
-		el: '#app',
-		router: $$$.router,
-		data: {
-			title: 'Hello World',
-			menus: [],
-			current: {
-				menu: 0,
-			}
-		},
-        methods: {
-			onMenuClick(menu) {
-				if(!menu.cb) return trace("No click callback for menu: " + menu.name);
-
-				menu.cb(menu);
-			},
-
-			onModeSelected(mode) {
-				if(!mode.cb) return trace("No mode-selected callback for mode: " + mode.name);
-
-				mode.cb(mode, true);
-			},
-
-			getMenuCSS(menu) {
-				if(!menu) menu = this.menus[0];
-				if(!menu) return '';
-
-				const bgColor = tinycolor(menu.color || '#88f');
-
-				return $$$.css.vars({
-					bgColor: bgColor.toHexString(),
-					bgColorHover: bgColor.brighten(25).toHexString(),
-					bgColorLight: bgColor.lighten(5).toHexString(),
-				});
-			},
-			getRoute(obj) {
-				var r = this.$router.currentRoute;
-
-				if(!obj) obj = r.params;
-				else {
-					_.forOwn(r.params, (value, key) => {
-						if(!obj[key]) obj[key] = _.isUndefined(value) ? false : value;
-					});
-				}
-
-				const link = [obj.name || r.name].pushIfExists(obj.brand, obj.campaign, obj.ad);
-
-				return '/' + link.join('/');
-			},
-			gotoRoute(obj) {
-				const isDifferentName = obj.name && obj.name!==$$$.getRouteName();
-				const link = this.getRoute(obj);
-				$$$.router.push(link);
-
-				if(isDifferentName) {
-					$$$.menu.init();
-					$$$.fx.fadeIn('#master', true);
-				}
-			}
-		},
-        computed: {
-			modes() {
-				return $$$.menu.topmenus;
-			}
-		},
-	});
-}
-
-//////////////////////// VUE-ROUTES:
-
+import App from '../vue/app.vue';
 import navTopBar from '../vue/nav-top-bar.vue';
 import navModeSelector from '../vue/nav-mode-selector.vue';
 
@@ -88,12 +8,86 @@ import pageDesigner from '../vue/page-02-designer.vue';
 import pageAnimator from '../vue/page-03-animator.vue';
 import pageInvoices from '../vue/page-04-invoices.vue';
 
-
-$$$.loadVueComp = function(name, compVue) {
-	Vue.component(name, Vue.extend(compVue));
-};
-
 const routes = [];
+
+//////////////////////////////////////////////////////////
+
+export default function SELF(config) {
+	Vue.use(VueRouter);
+	Vue.config.devtools = true;
+
+	const optionalParams = '/:brand?/:campaign?/:ad?';
+	const pageProps = {
+		brand: {type:String},
+		campaign: {type:String},
+		ad: {type:String},
+	};
+
+	$$$.loadVuePage('/animator' + optionalParams, pageAnimator, pageProps);
+	$$$.loadVuePage('/designer' + optionalParams, pageDesigner, pageProps);
+	$$$.loadVuePage('/invoices' + optionalParams, pageInvoices, pageProps);
+	$$$.loadVuePage('/project' + optionalParams, pageProject, pageProps);
+	$$$.loadVuePage('/', pageHome);
+
+	$$$.loadVueComp('top-bar', navTopBar);
+	$$$.loadVueComp('mode-selector', navModeSelector);
+
+	//Here's some Vue extensions (to quickly get to some common areas throughout the app).
+	_.getset(Vue.prototype, {
+		$app: {
+			get() { return this.$root.$children[0]; }
+		}
+	});
+
+	const lookups = {};
+
+	Vue.prototype.$lookup = function(tag, assign) {
+		if(assign) lookups[tag] = assign;
+		if(assign===false) lookups[tag] = null;
+
+		return lookups[tag];
+	};
+
+	registerComponents({
+		'icon': {
+			props: ['name'],
+			template: `<i :class="'fa fa-'+name"></i>`
+		},
+		'outer': { template: `<div class="inner"><slot></slot></div>` },
+		'goto': {
+			props: ['to'],
+			noDiv: true,
+			methods: {
+				doClick(e) {
+					this.$app.gotoRoute(this.to);
+					this.$emit('click', e);
+				}
+			},
+			template: `<a class="smart-link" href="javascript:;" @mousedown="doClick"><slot></slot></a>`
+		}
+	});
+
+	$$$.router = new VueRouter({routes: routes});
+
+	return new Vue({
+		el: '#app',
+		router: $$$.router,
+		template: '<App/>',
+		components: { App }
+	});
+}
+
+function registerComponents(comps) {
+	_.forOwn(comps, (comp, compName) => {
+		if(!comp.noDiv) {
+			comp.template = `<div class="${compName}">${comp.template}</div>`;
+		}
+
+		$$$.loadVueComp(compName, comp);
+	});
+}
+
+$$$.loadVueComp = (name, compVue) => Vue.component(name, Vue.extend(compVue));
 
 $$$.loadVuePage = function(pagePath, pageVue, pageProps) {
 	pageVue.props = _.extend(pageProps, pageVue.props);
@@ -120,23 +114,3 @@ $$$.loadVuePage = function(pagePath, pageVue, pageProps) {
 		component: pageComp
 	});
 };
-
-function setupVueRouter() {
-	const optionalParams = '/:brand?/:campaign?/:ad?';
-	const pageProps = {
-		brand: {type:String},
-		campaign: {type:String},
-		ad: {type:String},
-	};
-
-	$$$.loadVuePage('/animator' + optionalParams, pageAnimator, pageProps);
-	$$$.loadVuePage('/designer' + optionalParams, pageDesigner, pageProps);
-	$$$.loadVuePage('/invoices' + optionalParams, pageInvoices, pageProps);
-	$$$.loadVuePage('/project' + optionalParams, pageProject, pageProps);
-	$$$.loadVuePage('/', pageHome);
-
-	$$$.loadVueComp('top-bar', navTopBar);
-	$$$.loadVueComp('mode-selector', navModeSelector);
-
-	return new VueRouter({routes: routes});
-}
