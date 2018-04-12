@@ -12,17 +12,53 @@ $(document).keydown( e => {
 	}
 });
 
+const homeMenu = {name: 'Home', cb:onTopMenu, color: '#456', icon: 'home', desc: 'Home Screen'};
+
+function topmenus() {
+	return [
+		{name: 'Project',  cb:onTopMenu, color: '#f80', icon: 'star', desc: 'Create and Manage your projects and clients.'},
+		{name: 'Designer', cb:onTopMenu, color: '#c08', icon: 'object-group', desc: 'Draw and Import assets into a project.'},
+		{name: 'Animator', cb:onTopMenu, color: '#0c8', icon: 'play-circle', desc: 'Bring your assets to life in a timeline interface.'},
+		{name: 'Invoices', cb:onTopMenu, color: '#08f', icon: 'file', desc: 'Bill your clients and get paid!'},
+	];
+}
+
+function onTopMenu(menu, isSelected) {
+	const $modeSelector = $('#mode-selector');
+	const modeName = menu.name.toLowerCase();
+	const $modeSelected = $modeSelector.find('.mode-' + modeName);
+
+	$modeSelector.findAndRemove('.selected');
+
+	if(isSelected || $modeSelector.is(':visible')) {
+		if(isSelected) {
+			$modeSelected.addClass('selected');
+			$$$.menu.reset(menu);
+			$$$.router.push({name:modeName});
+
+			trace($$$.router.currentRoute);
+
+			$$$.fx.fadeIn('#master', true);
+		}
+		return $$$.fx.fadeOut('#mode-selector');
+	}
+
+	$$$.fx.fadeIn($modeSelector);
+
+	$modeSelected.addClass('selected');
+}
+
 const CRUMB_0 = '.breadcrumb .cr-0';
 
 _.extend(SELF, {
 	topmenus: topmenus(),
+	homeMenu: homeMenu,
+	onTopMenu: onTopMenu,
 
 	init() {
-		const routeName = $$$.router.currentRoute.path.split('/')[1];
+		const routeName = $$$.getRouteName();
 		const first = SELF.topmenus.find(m => m.name.toLowerCase()===routeName);
 		SELF.reset(first);
-
-		//first.cb(first, true);
 	},
 
 	reset(menus) {
@@ -52,35 +88,3 @@ _.extend(SELF, {
 		$(CRUMB_0).setClassIf('cr-single', $$$.vue.menus.length===1);
 	})
 });
-
-function topmenus() {
-	return [
-		{name: 'Project',  cb:onTopMenu, color: '#f80', icon: 'star', desc: 'Create and Manage your projects and clients.'},
-		{name: 'Designer', cb:onTopMenu, color: '#c08', icon: 'object-group', desc: 'Draw and Import assets into a project.'},
-		{name: 'Animator', cb:onTopMenu, color: '#0c8', icon: 'play-circle', desc: 'Bring your assets to life in a timeline interface.'},
-		{name: 'Invoices', cb:onTopMenu, color: '#08f', icon: 'file', desc: 'Bill your clients and get paid!'},
-	];
-}
-
-function onTopMenu(e, isSelected) {
-	const modeName = e.name.toLowerCase();
-	const modeSelected = $('#mode-selector').find('.mode-' + modeName);
-
-	$('#mode-selector .selected').removeClass('selected');
-
-
-	if(isSelected || $('#mode-selector').is(':visible')) {
-		if(isSelected) {
-			modeSelected.addClass('selected');
-			$$$.menu.reset(e);
-			$$$.router.push(modeName);
-
-			TweenMax.fromTo('#master', 0.5, {alpha:0}, {alpha:1});
-		}
-		return $$$.fx.fadeOut('#mode-selector');
-	}
-
-	$$$.fx.fadeIn('#mode-selector');
-
-	modeSelected.addClass('selected');
-}

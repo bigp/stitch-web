@@ -7,7 +7,6 @@ const root = here.remove('/libs');
 module.exports = {
 	root: root,
 	libs: here,
-	configs: root + '/configs',
 	public: root + '/public',
 	dist: root + '/public/dist',
 	private: root + '/.private',

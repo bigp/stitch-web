@@ -36,13 +36,13 @@ export default function SELF() {
 		const ext = (file || '').ext();
 
 		switch(ext) {
+			case 'vue': trace("Vue file changed: " + file); break;
 			case 'css':
 				$('link[hot-reload]').each((i, link) => {
 					link.href = link.href.split('?')[0] + "?id=" + $$$.randID();
 				});
 				break;
 			case 'html':
-			case 'vue': trace("Vue file changed: " + file); break;
 			case 'js':
 				trace("FORCE RELOAD: " + file);
 				setTimeout(() => {
@@ -54,4 +54,6 @@ export default function SELF() {
 				break;
 		}
 	});
+
+	return SELF;
 }

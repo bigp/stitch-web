@@ -11,8 +11,12 @@ function SELF(config) {
 	SELF.compiler = compiler;
 	SELF.fileChanged = output.path.mustEndWith('/').fixSlash() + output.filename;
 
-	compiler.inputFileSystem = fs;
-	compiler.outputFileSystem = $$$.memFS;
+	if($$$.env==='dev') {
+		compiler.inputFileSystem = fs;
+		compiler.outputFileSystem =  $$$.memFS;
+	} else {
+		trace("Webpack will write to /dist folder...");
+	}
 
 	return SELF;
 }

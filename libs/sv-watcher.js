@@ -5,6 +5,7 @@
 const chokidar = require('chokidar');
 const anymatch = require('anymatch');
 const hasPublic = p => p.has('public/');
+const hasDist = p => p.has('dist/');
 const watchHandlers = [];
 const defaultConfig = {
 	ignored: [/node_modules/, /package\.json/, /\.(git|idea|private|gitignore|lock)/]
@@ -35,7 +36,7 @@ function SELF(config) {
 		if(event==='addDir' || path.has('_tmp_') || (event==='add' && timeDiff < 5000)) return;
 
 		if(event==='change' && hasPublic(path)) {
-			if(path.endsWith('.js') || path.endsWith('.vue')) {
+			if(!hasDist(path) && path.has('.js', '.vue')) {
 				$$$.webpack
 					.run()
 					.catch(err => traceError(err));

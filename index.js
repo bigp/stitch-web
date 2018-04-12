@@ -3,11 +3,28 @@ global.$$$ = new Events();
 global._ = require('lodash');
 require('./libs/extensions');
 
+const yargs = require('yargs');
+const commands = yargs
+	.alias('p','prod')
+	.argv;
+
+$$$.env = commands.p ? 'prod' : 'dev';
+
+// .alias('r', 'render')
+// .alias('v', 'verbose')
+// .alias('o', 'overwrite')
+// .alias('z', 'zip')
+// .alias('q', 'quick')
+// .alias('t', 'port')
+// .alias('i', 'init')
+// .number('r')
+
+
 require('./libs/sv-restarter')(null, () => {
 	$$$.paths = require('./libs/sv-paths');
 
-	const config = require($$$.paths.configs + '/config');
-	const wpConfig = require($$$.paths.configs + '/config.webpack');
+	const config = require($$$.paths.libs + '/config');
+	const wpConfig = config.webpack;
 
 	const MFS = require('memory-fs');
 

@@ -8,6 +8,18 @@ export default function setupComponents() {
 		'icon': {
 			props: ['name'],
 			template: `<i :class="'fa fa-'+name"></i>`
+		},
+		'outer': { template: `<div class="inner"><slot></slot></div>` },
+		'goto': {
+			props: ['to'],
+			noDiv: true,
+			methods: {
+				doClick(e) {
+					this.$root.gotoRoute(this.to);
+					this.$emit('click', e);
+				}
+			},
+			template: `<a class="smart-link" href="javascript:;" @mousedown="doClick"><slot></slot></a>`
 		}
 	})
 }

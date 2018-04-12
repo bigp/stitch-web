@@ -13,11 +13,12 @@
     "socket.io": "^2.1.0",
     "style-loader": "^0.20.3",
     "vue-loader": "^14.2.2",
-    "vue-template-compiler": "^2.5.16"
+    "vue-template-compiler": "^2.5.16",
+    "yargs": "^11.0.0"
   },
   "scripts": {
-    "start": "node index.js --env dev",
-    "prod": "node index.js --env prod",
+    "start": "node index.js",
+    "prod": "node index.js -p",
     "test": "mocha --testing --recursive ./tests/"
   },
   "devDependencies": {

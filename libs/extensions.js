@@ -21,6 +21,9 @@
 				}
 				return false;
 			},
+			combineWith(delim, arr) {
+				return this.split(delim).concat(arr);
+			},
 			ext() {
 				return this.split('.').pop().toLowerCase()
 			},
@@ -77,9 +80,8 @@
 
 		_.extend(Array.prototype, {
 			has() {
-				for(var a=0; a<arguments.length;a++) {
-					const key = arguments[a];
-					if(this.indexOf(key) > -1) return true;
+				for(var a=0; a<arguments.length; a++) {
+					if(this.indexOf(arguments[a]) > -1) return true;
 				}
 				return false;
 			},
@@ -88,6 +90,15 @@
 				if(id===-1) return false;
 				this.splice(id, 1);
 				return true;
+			},
+			pushIfExists() {
+				for(var a=0; a<arguments.length; a++) {
+					const value = arguments[a];
+					if(!value) return this;
+					this.push(value);
+				}
+
+				return this;
 			}
 		});
 
@@ -96,6 +107,16 @@
 				return new Date().getTime().toString(36);
 			}
 		});
+
+		_.remap = (obj, cb) =>{
+			var result = {};
+			_.keysIn(obj).forEach((key, value) => {
+				var cbResult = cb(key, value);
+				result[cbResult.key] = cbResult.value;
+			})
+
+			return result;
+		}
 	}
 
 	if(!isNode) {

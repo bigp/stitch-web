@@ -5,6 +5,7 @@
     <title>Index HTML</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/darcula.min.css">
     <link rel="stylesheet" href="./css/styles.css" hot-reload="1">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
@@ -14,50 +15,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.8/howler.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.5/push.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.0.1/vue-router.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/javascript.min.js"></script>
+
 </head>
 <body>
 
 <div id="app">
-    <ul id="top-bar">
-        <ul class="breadcrumb pointer">
-            <li v-for="(menu, i) in menus"
-                :class="'crumb cr-' + i"
-                :style="getMenuCSS(menu)"
-                @click='onMenuClick(menu)'>
-                <icon :name="menu.icon"></icon>
-                <i>{{menu.name}}</i>
-            </li>
-        </ul>
-        <ul id="menu-bar" class="pointer">
-            <li>1</li>
-            <li>2</li>
-            <li>3</li>
-            <li>{{title}}</li>
-        </ul>
-        <ul id="right-bar" class="pointer">
-            <icon name="question-circle"></icon>
-            <icon name="bug"></icon>
-        </ul>
-    </ul>
+    <top-bar></top-bar>
 
     <div id="master">
         <router-view></router-view>
     </div>
 
-    <div id="mode-selector" class="box-shadow init-hidden is-centered">
-        <div v-for="(mode, i) in modes"
-             class="box pointer"
-             :class="'mode-' + mode.name.toLowerCase()"
-             :style="getMenuCSS(mode)"
-             @click="onModeSelected(mode)">
-
-            <i class="menu-name"><icon :name="mode.icon"></icon>{{mode.name}}</i>
-            <i class="menu-desc">{{mode.desc}}</i>
-        </div>
-    </div>
+    <mode-selector></mode-selector>
 </div>
 
 <script src="dist/bundle.js"></script>
