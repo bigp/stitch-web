@@ -1,15 +1,13 @@
 <template>
- <div class="page page-animator fullsize">
-  <!-- Left Nav -->
-  <outer class="left-pane">
-   Campaigns
-  </outer>
+ <outer class="page page-animator fullsize project-bg" :style="$root.getMenuCSS()">
+  Animator 101.
 
-  <!-- Right (main) Nav -->
-  <outer class="right-pane" :style="$root.getMenuCSS()">
-   Animator 101.
-  </outer>
- </div>
+  <div v-if="brand">
+   The brand you are animating is: {{brand}}
+   <i v-if="campaign">, {{campaign}}</i>
+   <i v-if="ad">, {{ad}}</i>
+  </div>
+ </outer>
 </template>
 
 <script>

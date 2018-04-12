@@ -1,19 +1,13 @@
 <template>
- <div class="page page-designer fullsize">
-  <!-- Left Nav -->
-  <outer class="left-pane">
-   Campaigns
-  </outer>
+ <outer class="page page-designer fullsize project-bg" :style="$root.getMenuCSS()">
+  <p>Designer panel</p>
 
-  <!-- Right (main) Nav -->
-  <outer class="right-pane" :style="$root.getMenuCSS()">
-   <p>Designer panel</p>
-
-   <div v-if="brand">
-    The brand you are designing for is: {{brand}}
-   </div>
-  </outer>
- </div>
+  <div v-if="brand">
+   The brand you are designing is: {{brand}}
+   <i v-if="campaign">, {{campaign}}</i>
+   <i v-if="ad">, {{ad}}</i>
+  </div>
+ </outer>
 </template>
 
 <script>

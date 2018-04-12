@@ -7,7 +7,7 @@
   </outer>
 
   <!-- Right (main) Nav -->
-  <outer class="right-pane" :style="$root.getMenuCSS()">
+  <outer class="right-pane project-bg" :style="$root.getMenuCSS()">
    <Recents label="Brands" field="brand" :source="recentBrands"></Recents>
 
    <div v-if="brand">

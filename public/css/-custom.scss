@@ -66,7 +66,7 @@ body {
   --bgColorHover: #f88;
 }
 
-#mode-selector {
+#mode-selector .panel {
   position: absolute;
   width: 600px;
   height: 400px;
@@ -137,7 +137,7 @@ body {
 }
 
 .outer {
-  border: solid 1px #888;
+  //border: solid 1px #888;
 }
 .inner {
   padding: 10px;
@@ -169,6 +169,15 @@ body {
   }
 }
 
+.project-bg {
+  background: linear-gradient(180deg, #fff 30%, var(--bgColorLight), var(--bgColor));
+}
+
+.fader {
+  position: absolute;
+  background: rgba(0,0,0,0.5);
+}
+
 ////////////////////// PAGE-PROJECT
 
 .page {
@@ -190,7 +199,6 @@ body {
   .right-pane {
     left: $leftWidth;
     right: 0px;
-    background: linear-gradient(180deg, #fff 30%, var(--bgColorLight), var(--bgColor));
   }
   b {
     font-weight: bold;

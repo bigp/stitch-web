@@ -1,15 +1,13 @@
 <template>
- <div class="page page-invoices fullsize">
-  <!-- Left Nav -->
-  <outer class="left-pane">
-   Campaigns
-  </outer>
+ <outer class="page page-invoices fullsize project-bg" :style="$root.getMenuCSS()">
+  Invoices
 
-  <!-- Right (main) Nav -->
-  <outer class="right-pane" :style="$root.getMenuCSS()">
-   Invoices:
-  </outer>
- </div>
+  <div v-if="brand">
+   The brand you are invoicing is: {{brand}}
+   <i v-if="campaign">, {{campaign}}</i>
+   <i v-if="ad">, {{ad}}</i>
+  </div>
+ </outer>
 </template>
 
 <script>

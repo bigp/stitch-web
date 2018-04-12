@@ -24,7 +24,7 @@
 /*since the first link does not have a triangle before it we can reduce the left padding to make it look consistent with other links*/
 .breadcrumb li:first-child {
   padding-left: 20px;
-  border-radius: 5px 0 0 5px; /*to match with the parent's radius*/
+  border-radius: 0 0 0 0; /*to match with the parent's radius*/
 }
 .breadcrumb li:first-child:before {
   left: 14px;
@@ -87,9 +87,14 @@
 
   .cr-single { padding-right: 20px; }
   .cr-0, .cr-1, .cr-2 { font-weight: bold; }
-  .cr-0 { font-size: 150%; width: 110px; .icon { margin-right: 5px; } }
+  .cr-0 { font-size: 150%; }
   .cr-1 { font-size: 120%; }
   .cr-2 { font-size: 110%; }
+
+  .cr-0 {
+    width: 110px;
+    .icon { margin-right: 5px; }
+  }
 
 
   li {
