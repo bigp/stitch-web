@@ -21,10 +21,17 @@ function SELF(config) {
 	return SELF;
 }
 
+let isRunning = false;
 function run(cbWarnings) {
 	return new Promise((_then, _catch) => {
+		if(isRunning) return traceError("Already running Webpack...");
+
+		isRunning = true;
+
 		SELF.compiler.run(function(err, stats) {
 			if(err) return _catch(err);
+
+			isRunning = false;
 
 			const ret = stats.toJson();
 

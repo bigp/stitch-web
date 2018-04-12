@@ -90,15 +90,18 @@ body {
     text-shadow: 1px 1px 1px #000;
     text-decoration: none;
     transition: transform 0.1s;
+    @include vbox();
+    height: auto;
 
     .menu-name {
       .icon { display: inline; margin-right: 5px; line-height: 150%; }
-      display: block;
+      display: inline-block;
       font-weight: bold;
       font-size: 160%;
-      margin-bottom: 15px;
-      //text-decoration: underline;
-      border-bottom: dotted 1px rgba(255, 255, 255, 0.5);
+    }
+
+    .menu-desc {
+      margin-left: 10px;
     }
 
     &:hover {

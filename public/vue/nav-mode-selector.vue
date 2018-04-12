@@ -1,15 +1,15 @@
 <template>
     <div id="mode-selector" class="fader fullsize init-hidden">
         <div class="panel box-shadow is-centered">
-            <goto v-for="(mode, i) in modes" :key="mode.name"
+            <goto v-for="(menu, i) in $app.topmenus" :key="menu.name"
                  class="box pointer"
-                  @click="onModeSelected(mode)"
-                 :to="{name: mode.name.toLowerCase()}"
-                  :class="['mode-' + mode.name.toLowerCase(), {selected: mode.name.toLowerCase()===$app.getRouteName()}]"
-                  :style="$app.getMenuCSS(mode)">
+                  @click="onModeSelected(menu)"
+                 :to="{name: menu.name.toLowerCase()}"
+                  :class="getCSS(menu)"
+                  :style="$app.getMenuCSS(menu)">
 
-                <i class="menu-name"><icon :name="mode.icon"></icon>{{mode.name}}</i>
-                <i class="menu-desc">{{mode.desc}}</i>
+                <i class="menu-name"><icon :name="menu.icon"></icon>{{menu.name}}</i>
+                <i class="menu-desc">{{menu.desc}}</i>
             </goto>
         </div>
     </div>
@@ -17,28 +17,24 @@
 
 <script>
 
-var $modeSelector;
-
 export default {
 	computed: {
-		modes() {
-			const menu = this.$lookup('menu');
-			trace('menu...');
-			trace(menu);
-			if(!menu) return [];
 
-			return menu.topmenus;
-        }
     },
 
 	methods: {
-		onModeSelected(mode) {
-			mode.cb(mode);
-		}
-    },
+		getCSS(menu) {
+			var lowcase = menu.name.toLowerCase();
+			return [
+				'mode-' + lowcase,
+                {selected: lowcase===this.$app.getRouteName()}
+            ];
+        },
 
-    mounted() {
-    	$modeSelector = $('#mode-selector');
+		onModeSelected(menu) {
+			$$$.fx.fadeOut('#mode-selector');
+			this.$forceUpdate();
+		}
     }
 }
 

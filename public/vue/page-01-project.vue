@@ -75,7 +75,9 @@ export default {
     }),
 
     computed: {
-    	menusExceptProject: () => $$$.menu.topmenus.filter(m => m.name!=='Project')
+    	menusExceptProject() {
+    		return this.$app.topmenus.filter(m => m.name!=='Project');
+		}
     },
 
     components: { Recents }

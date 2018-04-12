@@ -1,7 +1,7 @@
 <template>
     <div id="top-bar">
         <ul class="breadcrumb pointer">
-            <li v-for="(menu, i) in $app.menus"
+            <li v-for="(menu, i) in $app.breadcrumbs"
                 :class="'crumb cr-' + i"
                 :style="$app.getMenuCSS(menu)"
                 @click='$app.onMenuClick(menu)'>
@@ -28,25 +28,13 @@
 
 	$(document).keydown( e => {
 		switch(e.key) {
-			case ' ': _this.pushMenu(_this.topmenus[1]); break;
+			case ' ': _this.pushMenu(_this.$app.topmenus[1]); break;
 			case 'Backspace': _this.popMenu(); break;
 		}
 	});
 
 	export default {
-		data() {
-			return {
-				homeMenu: {name: 'Home', cb:this.onTopMenu, color: '#456', icon: 'home', desc: 'Home Screen'},
-				topmenus: [
-					{name: 'Project',  cb:this.onTopMenu, color: '#f80', icon: 'star', desc: 'Create and Manage your projects and clients.'},
-					{name: 'Designer', cb:this.onTopMenu, color: '#c08', icon: 'object-group', desc: 'Draw and Import assets into a project.'},
-					{name: 'Animator', cb:this.onTopMenu, color: '#0c8', icon: 'play-circle', desc: 'Bring your assets to life in a timeline interface.'},
-					{name: 'Invoices', cb:this.onTopMenu, color: '#08f', icon: 'file', desc: 'Bill your clients and get paid!'},
-				],
-			}
-        },
-
-        computed: {
+		computed: {
 
         },
 
@@ -56,29 +44,29 @@
             	if(_this._isFixing) return;
 
 				_.defer(function() {
-					$(CRUMB_0).setClassIf('cr-single', _this.$app.menus.length===1);
+					$(CRUMB_0).setClassIf('cr-single', _this.$app.breadcrumbs.length===1);
 					_this._isFixing = false;
                 });
             },
 
 			init() {
 				const routeName = this.$app.getRouteName();
-				const first = this.topmenus.find(m => m.name.toLowerCase()===routeName);
+				const first = this.$app.topmenus.find(m => m.name.toLowerCase()===routeName);
 				this.reset(first);
 			},
 
 			reset(menus) {
-				this.$app.menus = _.castArray(menus || []);
+				this.$app.breadcrumbs = _.castArray(menus || []);
 				this._fixStyle();
 			},
 
 			pushMenu(menu) {
-				this.$app.menus.push(menu);
+				this.$app.breadcrumbs.push(menu);
 				this._fixStyle();
 			},
 
 			popMenu() {
-				if(this.$app.menus.length===1) {
+				if(this.$app.breadcrumbs.length===1) {
 					return TweenMax.fromTo(
 						CRUMB_0,
 						0.5,
@@ -86,7 +74,7 @@
 						{css: {color:'#fff'}, ease: Bounce.easeOut });
 				}
 
-				this.$app.menus.pop();
+				this.$app.breadcrumbs.pop();
 				this._fixStyle();
 			},
 

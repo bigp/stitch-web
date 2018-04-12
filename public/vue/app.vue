@@ -11,36 +11,32 @@
 </template>
 <script>
     export default {
-		data: () => ({
-			title: 'Hello World',
-			menus: [],
-			current: {
-				menu: 0,
+		data() {
+			return {
+				title: 'Hello World',
+
+				homeMenu: {name: 'Home', color: '#456', icon: 'home', desc: 'Home Screen'},
+
+				topmenus: [
+					{name: 'Project',  color: '#f80', icon: 'star', desc: 'Create and Manage your projects and clients.'},
+					{name: 'Designer', color: '#c08', icon: 'object-group', desc: 'Draw and Import assets into a project.'},
+					{name: 'Animator', color: '#0c8', icon: 'play-circle', desc: 'Bring your assets to life in a timeline interface.'},
+					{name: 'Invoices', color: '#08f', icon: 'file', desc: 'Bill your clients and get paid!'},
+				],
+
+				breadcrumbs: []
 			}
-		}),
-		methods: {
+        },
+
+        methods: {
 			onMenuClick(menu) {
-				if(!menu.cb) return trace("No click callback for menu: " + menu.name);
+				if(!menu.cb) return $$$.fx.fadeIn('#mode-selector');
 
 				menu.cb(menu);
 			},
 
-			onModeSelected(mode) {
-				if(!mode.cb) return trace("No mode-selected callback for mode: " + mode.name);
-
-				mode.cb(mode, true);
-			},
-
-            getModes() {
-				const menu = this.$lookup('menu');
-				trace(menu);
-				if(!menu) return [];
-
-				return menu.topmenus;
-			},
-
 			getMenuCSS(menu) {
-				if(!menu) menu = this.menus[0];
+				if(!menu) menu = this.breadcrumbs[0];
 				if(!menu) return '';
 
 				const bgColor = tinycolor(menu.color || '#88f');
@@ -68,13 +64,14 @@
 
 				return '/' + link.join('/');
 			},
+
 			gotoRoute(obj) {
 				const isDifferentName = obj.name && obj.name!==this.$app.getRouteName();
 				const link = this.getRoute(obj);
-				$$$.router.push(link);
+				this.$router.push(link);
 
 				if(isDifferentName) {
-					$$$.menu.init();
+					this.$lookup('menu').init();
 					$$$.fx.fadeIn('#master', true);
 				}
 			}

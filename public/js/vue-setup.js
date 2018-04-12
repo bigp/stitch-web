@@ -67,11 +67,9 @@ export default function SELF(config) {
 		}
 	});
 
-	$$$.router = new VueRouter({routes: routes});
-
 	return new Vue({
 		el: '#app',
-		router: $$$.router,
+		router: new VueRouter({routes: routes}),
 		template: '<App/>',
 		components: { App }
 	});
