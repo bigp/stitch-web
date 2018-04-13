@@ -96,11 +96,7 @@
     .icon { margin-right: 5px; }
   }
 
-
   li {
-    --bgColor: #f00;
-    --bgColorHover: #f80;
-
     transform-style: flat;
 
     background: var(--bgColor);

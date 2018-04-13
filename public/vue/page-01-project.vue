@@ -28,16 +28,16 @@
    </div>
 
    <div v-if="campaign">
-    <nobr>
      <h3>Launch in:</h3>
-    <i v-for="(menu, i) in menusExceptProject">
-     <goto class="friendly-box"
+    <div class="grid-50-50 launcher-box">
+     <goto v-for="(menu, i) in menusExceptProject"
+           class="friendly-box"
            :style="$app.getMenuCSS(menu)"
            :to="{name: menu.name.toLowerCase()}">
        <icon :name="menu.icon"></icon> {{menu.name}}
      </goto>
+    </div>
     </i>
-    </nobr>
    </div>
 
   </outer>

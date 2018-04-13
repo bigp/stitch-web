@@ -35,6 +35,13 @@ module.exports = {
 			rules: [
 				{ test: /\.css$/, use: [ 'style-loader', 'css-loader' ] },
 				{ test: /\.vue$/, use: [ 'vue-loader' ] },
+				{ test: /\.js$/, use: {
+					loader: 'babel-loader',
+					options: {
+						babelrc: true,
+						presets: ['@babel/preset-env'],
+					}
+				}},
 			]
 		},
 

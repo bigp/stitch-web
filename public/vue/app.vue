@@ -10,14 +10,16 @@
     </div>
 </template>
 <script>
+    const homeMenu = {name: 'Home', path:'/', color: '#456', icon: 'home', desc: 'Welcome to Stitch-Web!'};
     export default {
 		data() {
 			return {
 				title: 'Hello World',
 
-				homeMenu: {name: 'Home', color: '#456', icon: 'home', desc: 'Home Screen'},
+				homeMenu: homeMenu,
 
 				topmenus: [
+					homeMenu,
 					{name: 'Project',  color: '#f80', icon: 'star', desc: 'Create and Manage your projects and clients.'},
 					{name: 'Designer', color: '#c08', icon: 'object-group', desc: 'Draw and Import assets into a project.'},
 					{name: 'Animator', color: '#0c8', icon: 'play-circle', desc: 'Bring your assets to life in a timeline interface.'},
@@ -29,8 +31,13 @@
         },
 
         methods: {
+			showModeSelector() {
+				$$$.fx.fadeIn('#mode-selector');
+
+            },
+
 			onMenuClick(menu) {
-				if(!menu.cb) return $$$.fx.fadeIn('#mode-selector');
+				if(!menu.cb) return this.showModeSelector();
 
 				menu.cb(menu);
 			},
@@ -43,14 +50,15 @@
 
 				return $$$.css.vars({
 					bgColor: bgColor.toHexString(),
-					bgColorHover: bgColor.brighten(25).toHexString(),
-					bgColorLight: bgColor.lighten(5).toHexString(),
+					bgColorDark: bgColor.darken(20).toHexString(),
+					bgColorLight: bgColor.brighten(20).toHexString(),
+                    bgColorHover: bgColor.brighten(50).toHexString(),
 				});
 			},
             getRouteName() {
 				return this.$router.currentRoute.path.split('/')[1];
             },
-			getRoute(obj) {
+			getRoutePath(obj) {
 				var r = this.$router.currentRoute;
 
 				if(!obj) obj = r.params;
@@ -66,8 +74,8 @@
 			},
 
 			gotoRoute(obj) {
-				const isDifferentName = obj.name && obj.name!==this.$app.getRouteName();
-				const link = this.getRoute(obj);
+				const isDifferentName = obj.name && obj.name!==this.getRouteName();
+				const link = this.getRoutePath(obj);
 				this.$router.push(link);
 
 				if(isDifferentName) {

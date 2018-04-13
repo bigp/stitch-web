@@ -1,12 +1,7 @@
 import App from '../vue/app.vue';
-import navTopBar from '../vue/ui-top-bar.vue';
-import navModeSelector from '../vue/ui-mode-selector.vue';
 
-import pageHome from '../vue/page-00-home.vue';
-import pageProject from '../vue/page-01-project.vue';
-import pageDesigner from '../vue/page-02-designer.vue';
-import pageAnimator from '../vue/page-03-animator.vue';
-import pageInvoices from '../vue/page-04-invoices.vue';
+import * as uiComps from '../vue/ui-*';
+import * as pages from '../vue/page-*';
 
 const routes = [];
 
@@ -21,14 +16,23 @@ export default function SELF(config) {
 		ad: {type:String},
 	};
 
-	$$$.loadVuePage('/animator' + optionalParams, pageAnimator, pageProps);
-	$$$.loadVuePage('/designer' + optionalParams, pageDesigner, pageProps);
-	$$$.loadVuePage('/invoices' + optionalParams, pageInvoices, pageProps);
-	$$$.loadVuePage('/project' + optionalParams, pageProject, pageProps);
-	$$$.loadVuePage('/', pageHome);
+	_.forOwn(pages, (page, name) => {
+		const shortName = name.split('-').pop();
+		const path = '/' + shortName + optionalParams;
+		if(shortName==='home') {
+			$$$.loadVuePage('/', page);
+			$$$.loadVuePage('/home', page);
+		} else {
+			$$$.loadVuePage(path, page, pageProps);
+		}
+	});
 
-	$$$.loadVueComp('top-bar', navTopBar);
-	$$$.loadVueComp('mode-selector', navModeSelector);
+	_.forOwn(uiComps, (ui, name) => {
+		const shortName = name.remove('ui-');
+		$$$.loadVueComp(shortName, ui);
+	});
+
+	routes.push({path: '/home/*', redirect: '/home'});
 
 	//Here's some Vue extensions (to quickly get to some common areas throughout the app).
 	_.getset(Vue.prototype, {

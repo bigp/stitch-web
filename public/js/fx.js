@@ -3,13 +3,21 @@
  */
 $$$.fx = {
 	fadeIn(el, isForced) {
-		$(el).show();
+		const $el = $(el);
+		const $vue = $el[0].__vue__;
+		if($vue) $vue.isVisible = true;
 
-		if(isForced) return TweenMax.fromTo(el, 0.2, {alpha:0}, {alpha:1});
-		return TweenMax.to(el, 0.2, {alpha:1});
+		$el.show();
+
+		if(isForced) return TweenMax.fromTo($el, 0.2, {alpha:0}, {alpha:1});
+		return TweenMax.to($el, 0.2, {alpha:1});
 	},
 
 	fadeOut(el) {
+		const $el = $(el);
+		const $vue = $el[0].__vue__;
+		if($vue) $vue.isVisible = false;
+
 		TweenMax.to(el, 0.2, {alpha:0, onComplete() {
 			$(el).hide();
 		}});
