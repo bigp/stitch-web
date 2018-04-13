@@ -1,6 +1,6 @@
 import App from '../vue/app.vue';
-import navTopBar from '../vue/nav-top-bar.vue';
-import navModeSelector from '../vue/nav-mode-selector.vue';
+import navTopBar from '../vue/ui-top-bar.vue';
+import navModeSelector from '../vue/ui-mode-selector.vue';
 
 import pageHome from '../vue/page-00-home.vue';
 import pageProject from '../vue/page-01-project.vue';
@@ -9,8 +9,6 @@ import pageAnimator from '../vue/page-03-animator.vue';
 import pageInvoices from '../vue/page-04-invoices.vue';
 
 const routes = [];
-
-//////////////////////////////////////////////////////////
 
 export default function SELF(config) {
 	Vue.use(VueRouter);
@@ -88,8 +86,6 @@ function registerComponents(comps) {
 $$$.loadVueComp = (name, compVue) => Vue.component(name, Vue.extend(compVue));
 
 $$$.loadVuePage = function(pagePath, pageVue, pageProps) {
-	pageVue.props = _.extend(pageProps, pageVue.props);
-
 	const watchers = _.remap(pageVue.props, (key, value) => {
 		return {
 			key: '$route.params.' + key,
@@ -101,6 +97,7 @@ $$$.loadVuePage = function(pagePath, pageVue, pageProps) {
 	});
 
 	pageVue.watch = _.extend(watchers, pageVue.watch);
+	pageVue.props = _.extend(pageProps, pageVue.props);
 
 	const pageName = pagePath.split('/')[1] || 'home';
 	const pageComp = Vue.extend(pageVue);

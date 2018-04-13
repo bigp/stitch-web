@@ -8,8 +8,10 @@
                   :class="getCSS(menu)"
                   :style="$app.getMenuCSS(menu)">
 
-                <i class="menu-name"><icon :name="menu.icon"></icon>{{menu.name}}</i>
-                <i class="menu-desc">{{menu.desc}}</i>
+                <div class="table">
+                    <i class="menu-name"><icon :name="menu.icon"></icon>{{menu.name}}:</i>
+                    <i class="menu-desc">{{menu.desc}}</i>
+                </div>
             </goto>
         </div>
     </div>
