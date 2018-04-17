@@ -29,7 +29,7 @@
 
    <div v-if="campaign">
      <h3>Launch in:</h3>
-    <div class="grid-50-50 launcher-box">
+    <div class="grid-50-50 project-launcher-box">
      <goto v-for="(menu, i) in menusExceptProject"
            class="friendly-box"
            :style="$app.getMenuCSS(menu)"

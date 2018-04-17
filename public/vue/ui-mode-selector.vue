@@ -32,6 +32,11 @@ export default {
     },
 
 	methods: {
+		fadeOut(isForced) {
+			$$$.fx.fadeOut(this.$el);
+			isForced && this.$forceUpdate();
+        },
+
 		getCSS(menu) {
 			var lowcase = menu.name.toLowerCase();
 			return [
@@ -41,21 +46,20 @@ export default {
         },
 
 		onModeSelected(menu) {
-			$$$.fx.fadeOut('#mode-selector');
-			this.$forceUpdate();
+			this.fadeOut(true);
 		}
     },
 
     mounted() {
-        $('#mode-selector').find('.fader').click(() => {
-			$$$.fx.fadeOut('#mode-selector');
-        });
-
         var _this = this;
+
+		$(this.$el).find('.fader').click(() => {
+			_this.fadeOut();
+		});
 
         $(window).keydown(e => {
         	if(!_this.isVisible) return;
-			$$$.fx.fadeOut('#mode-selector');
+			_this.fadeOut();
         })
     }
 }
