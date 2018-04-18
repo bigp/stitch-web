@@ -6,21 +6,11 @@ require('./libs/extensions');
 const yargs = require('yargs');
 const commands = yargs
 	.alias('p','prod')
+	.alias('v','verbose')
 	.argv;
 
-$$$.env = commands.p ? 'prod' : 'dev';
-
-// .alias('r', 'render')
-// .alias('v', 'verbose')
-// .alias('o', 'overwrite')
-// .alias('z', 'zip')
-// .alias('q', 'quick')
-// .alias('t', 'port')
-// .alias('i', 'init')
-// .number('r')
-
-
 require('./libs/sv-restarter')(null, () => {
+	$$$.env = commands.p ? 'prod' : 'dev';
 	$$$.paths = require('./libs/sv-paths');
 
 	const config = require($$$.paths.libs + '/config');
@@ -36,9 +26,7 @@ require('./libs/sv-restarter')(null, () => {
 	$$$.webpack = require('./libs/sv-webpack')(wpConfig);
 
 	$$$.webpack.run()
-		.then(stats => {
-			//trace('WEBPACK COMPLETED');
-		})
+		.then(stats => { /* trace('WEBPACK COMPLETED'); */})
 		.catch(err => traceError(err));
 
 	if(process.argv.has('--testing')) {
