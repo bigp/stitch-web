@@ -37,6 +37,8 @@ function SELF() {
 			$$$.io.emit('file-changed', cssPath);
 		}
 	}
+
+	return SELF;
 }
 
 module.exports = SELF;

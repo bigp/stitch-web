@@ -13,8 +13,9 @@ require('./libs/sv-restarter')(null, () => {
 	$$$.env = commands.p ? 'prod' : 'dev';
 	$$$.paths = require('./libs/sv-paths');
 
-	const config = require($$$.paths.libs + '/config');
-	const wpConfig = config.webpack;
+	const configPriv = require($$$.paths.private + '/private.config');
+	const config = _.extend( require($$$.paths.libs + '/config'), configPriv);
+	const configWP = config.webpack;
 
 	const MFS = require('memory-fs');
 
@@ -23,13 +24,14 @@ require('./libs/sv-restarter')(null, () => {
 	$$$.watcher = require('./libs/sv-watcher')(config);
 	$$$.autoOpen = require('./libs/sv-auto-open')(config);
 	$$$.sass = require('./libs/sv-sass-compile')();
-	$$$.webpack = require('./libs/sv-webpack')(wpConfig);
+	$$$.webpack = require('./libs/sv-webpack')(configWP);
+	$$$.stitch = require('./libs/sv-stitchweb')(config);
 
 	$$$.webpack.run()
 		.then(stats => { /* trace('WEBPACK COMPLETED'); */})
 		.catch(err => traceError(err));
 
 	if(process.argv.has('--testing')) {
-		require('./sv-test-helpers')(GLOBALS);
+		require('./sv-chai-helpers')(GLOBALS);
 	}
 });

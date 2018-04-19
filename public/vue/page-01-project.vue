@@ -1,13 +1,13 @@
 <template>
  <div class="page page-project fullsize">
-  <!-- Left Nav -->
+  <!-- Left Nav
   <outer class="left-pane">
     <h2>Brands</h2>
    <hr/>
-  </outer>
+  </outer>-->
 
   <!-- Right (main) Nav -->
-  <outer class="right-pane project-bg" :style="$app.getMenuCSS()">
+  <outer class="fullsize page-bg" :style="$app.getMenuCSS()">
    <Recents label="Brands" field="brand" :source="recentBrands"></Recents>
 
    <div v-if="brand">
@@ -37,7 +37,6 @@
        <icon :name="menu.icon"></icon> {{menu.name}}
      </goto>
     </div>
-    </i>
    </div>
 
   </outer>

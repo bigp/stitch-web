@@ -14,6 +14,8 @@ function SELF(config) {
 		res.send({ok:1});
 	});
 
+	if(config.autoOpen===false) return;
+
 	setTimeout(SELF.checkIfNeedsToOpen, MAX_TIME_TO_OPEN);
 }
 

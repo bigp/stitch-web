@@ -12,6 +12,20 @@
 		GLOBALS.traceClear = isNode ?
 			function() { global['process'].stdout.write('\x1Bc'); } :
 			console.clear.bind(console);
+		GLOBALS.traceProps = function(o) {
+			trace(_.keys(o));
+		};
+
+		const traceOnceTags = {};
+		GLOBALS.traceOnce = (tag, msg) => {
+			if(!msg) msg = tag;
+			else if(isNode) msg = `[${tag.toUpperCase()}]`.bgRed + `: ${msg}`;
+
+			if(traceOnceTags[tag]) return;
+			traceOnceTags[tag] = true;
+
+			trace(msg);
+		}
 
 		_.extend(String.prototype, {
 			has() {

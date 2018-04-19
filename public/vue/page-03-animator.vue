@@ -1,5 +1,5 @@
 <template>
- <outer class="page page-animator fullsize project-bg" :style="$app.getMenuCSS()">
+ <outer class="page page-animator fullsize page-bg" :style="$app.getMenuCSS()">
   Animator 101.
 
   <div v-if="brand">

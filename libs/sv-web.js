@@ -1,14 +1,19 @@
 const fs = require('fs-extra');
 const express = require('express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
+const passport = require('passport');
+const redis = require('redis');
+const RedisStore = require('connect-redis')(session);
 const app = express();
 const http = require('http');
 const mime = require('mime-types');
 const server = http.createServer(app);
 const socketIO = require('socket.io');
 
-function debug() {
-	//trace.apply(null, arguments);
-}
+function debug() { } //trace.apply(null, arguments);
 
 function SELF(config) {
 	if(!config.web) throw 'Missing "config.web" field in configuration file.';
@@ -16,6 +21,20 @@ function SELF(config) {
 	SELF.app = app;
 	SELF.express = express;
 	SELF.server = server;
+
+	const redisConf = _.extend(config.redisStore, {client: redis.createClient()});
+	const sessionConfig = _.extend(config.session, {store: new RedisStore(redisConf)});
+
+	//app.set('trust proxy', 1);
+	app.use(cookieSession(config.cookieSession));
+	app.use(cookieParser(config.session.secret));
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({extended: true}));
+	app.use(session(sessionConfig));
+	app.use(passport.initialize());
+	app.use(passport.session());
+
+	trace("SESSION ADDED with PASSPORT...".cyan);
 
 	SELF.ioInit(config.io || {});
 
@@ -85,7 +104,16 @@ SELF.setupRoutes = function(routes) {
 				const subPath = routeArr.length===1 ? routeArr[0] : routeArr[1];
 
 				debug("ROUTE MIDDLEWARE: " + method.toUpperCase() + "::" + subPath);
-				router[method](subPath, obj);
+
+				if(obj.length===0) {
+					//Must be some sort of special chained route:
+					const routeChains = obj();
+					trace("ROUTE CHAINS... " + routeChains.length);
+
+					router[method].apply(router, [subPath].concat(routeChains));
+				} else {
+					router[method](subPath, obj);
+				}
 			});
 		});
 

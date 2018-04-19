@@ -1,15 +1,24 @@
 {
   "dependencies": {
+    "body-parser": "^1.18.2",
     "chokidar": "^2.0.3",
     "colors": "^1.2.1",
+    "connect-redis": "^3.3.3",
+    "cookie-parser": "^1.4.3",
+    "cookie-session": "^2.0.0-beta.3",
     "css-loader": "^0.28.11",
     "express": "^4.16.3",
+    "express-session": "^1.15.6",
     "fs-extra": "^5.0.0",
     "lodash": "^4.17.5",
     "memory-fs": "^0.4.1",
     "moment": "^2.22.0",
     "node-sass": "^4.8.3",
     "opn": "^5.3.0",
+    "passport": "^0.4.0",
+    "passport-google": "^0.3.0",
+    "passport-google-oauth20": "^1.0.0",
+    "redis": "^2.8.0",
     "socket.io": "^2.1.0",
     "style-loader": "^0.20.3",
     "vue-loader": "^14.2.2",
@@ -17,6 +26,7 @@
     "yargs": "^11.0.0"
   },
   "scripts": {
+    "redis": "cd .private & cls & redis-server redis.config.ini & cd ../",
     "start": "node index.js",
     "prod": "node index.js -p",
     "test": "mocha --testing --recursive ./tests/"
@@ -29,11 +39,20 @@
     "chai": "^4.1.2"
   },
   "babel": {
-    "presets": ["@babel/preset-env"],
-    "plugins": [["wildcard", {
-      "noCamelCase": true,
-      "exts": ["js", "vue"]
-    }]
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "plugins": [
+      [
+        "wildcard",
+        {
+          "noCamelCase": true,
+          "exts": [
+            "js",
+            "vue"
+          ]
+        }
+      ]
     ]
   }
 }

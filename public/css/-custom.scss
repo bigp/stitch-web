@@ -185,22 +185,18 @@ body {
 
 /////////////////////////////////////
 
+.outer {}
+.inner { padding: 10px; }
 .table { display: table; width: 100%; height: 100%; }
 .pointer { cursor: pointer; }
 .box-shadow { box-shadow: 0px 2px 16px #000; }
 .init-hidden { display: none !important; }
 .fullsize { width: 100%; height: 100%; }
-
-.outer {} //border: solid 1px #888;
-.inner { padding: 10px; }
+.page-bg { background: linear-gradient(180deg, #fff 30%, var(--bgColorLight), var(--bgColor)); }
 
 .code-javascript {
   line-height: 120%;
   font-family: monospace;
-}
-
-.project-bg {
-  background: linear-gradient(180deg, #fff 30%, var(--bgColorLight), var(--bgColor));
 }
 
 .fader {
