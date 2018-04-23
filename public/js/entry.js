@@ -24,6 +24,7 @@ $$$(() => {
 function applySpecialSelectors() {
 	window.addEventListener('resize', _isCentered);
 	$$$.onLater('style-changed', -3, _isCentered);
+	$$$.on('dom-changed', _isCentered);
 	_.defer(_isCentered);
 
 	TweenMax.set('.init-hidden', {alpha:0});
@@ -34,6 +35,7 @@ function applySpecialSelectors() {
 	//////////////////////////////////////
 
 	function _isCentered() {
+		trace("Recenter...");
 		$('.is-centered').center();
 	}
 

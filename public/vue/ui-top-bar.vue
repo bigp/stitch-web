@@ -16,16 +16,10 @@
             <li>Tools</li>
         </ul>
         <ul id="right-bar" class="pointer">
-            <icon name="user" id="user-icon" @click="login()"></icon>
+            <icon name="user" id="user-icon" @mousedown="login()"></icon>
             <icon name="question-circle"></icon>
             <icon name="bug"></icon>
         </ul>
-
-        <div id="user-login" class="is-centered">
-            <h3>User Login</h3>
-            <hr/>
-            <field label="firstname" value="First Name"></field>
-        </div>
     </div>
 </template>
 
@@ -107,17 +101,19 @@ export default {
         },
 
 		login() {
-        	const panel = $('#user-panel');
-        	trace(panel);
+        	$$$.panelManager.push('user-login');
 
-			$.post('./auth')
-				.then( loginData => {
-					trace("LOGIN DATA is:");
-					trace(loginData);
-				})
-				.catch( err => {
-					trace("Error");
-				})
+//        	const panel = $('#user-panel');
+//        	trace(panel);
+//
+//			$.post('./auth')
+//				.then( loginData => {
+//					trace("LOGIN DATA is:");
+//					trace(loginData);
+//				})
+//				.catch( err => {
+//					trace("Error");
+//				})
 		}
     },
 
@@ -125,6 +121,10 @@ export default {
         _this = this;
 
         this.$lookup('menu', this);
+
+        false && setTimeout(() => {
+        	this.login();
+        }, 500)
     }
 };
 </script>

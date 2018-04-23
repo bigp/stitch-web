@@ -9,6 +9,8 @@ export default function SELF(config) {
 	Vue.use(VueRouter);
 	Vue.config.devtools = true;
 
+	$$$.components = {};
+
 	const optionalParams = '/:brand?/:campaign?/:ad?';
 	const pageProps = {
 		brand: {type:String},
@@ -37,6 +39,7 @@ export default function SELF(config) {
 	//Here's some Vue extensions (to quickly get to some common areas throughout the app).
 	_.getset(Vue.prototype, {
 		$app: { get() { return this.$root.$children[0]; }},
+		$super: { get() { return this.$children[0]; }},
 		$global: { get() { return window; }}
 	});
 
@@ -80,8 +83,8 @@ export default function SELF(config) {
 		'field': {
 			props: ['name', 'label', 'value'],
 			template: `
-			<i class="field-label"></i>
-			<i class="field-value">
+			<i class="field field-label">{{label}}</i>
+			<i class="field field-value">
 				<input :id="name" :name="name" type="text" v-model:value="value" />
 			</i>
 			`
@@ -112,7 +115,61 @@ function registerDirectives(directives) {
 	})
 }
 
-$$$.loadVueComp = (name, compVue) => Vue.component(name, Vue.extend(compVue));
+$$$.loadVueComp = function(name, compVue) {
+	var comp = Vue.extend(compVue);
+	$$$.components[name] = comp;
+	Vue.component(name, comp);
+};
+
+$$$.panelManager = {
+	push(name, options) {
+		if(!name.startsWith('panel-')) name = 'panel-' + name;
+		const panelData = _.extend(options, {name: name});
+
+		trace();
+
+		this.$panels.push(panelData);
+		return panelData;
+	},
+	pop() {
+		return this.$panels.pop();
+	},
+	remove(name) {
+		if(!name.startsWith('panel-')) name = 'panel-' + name;
+
+		const found = this.$panels.find(p => p.name===name);
+		if(!found) return traceError("Could not remove panel: " + name);
+
+		this.$panels.remove(found);
+
+		return found;
+	}
+};
+
+_.getset($$$.panelManager, {
+	$panels: { get() { return $$$.vue.$app.panels; }}
+});
+
+// $$$.newComponent = function(name, toElement) {
+// 	const comp = $$$.components[name];
+// 	if(!comp) throw 'Could not instantiate component by name: ' + name;
+//
+// 	const inst = new $$$.components[name]().$mount();
+//
+// 	if(toElement) $(toElement).append(inst.$el);
+//
+// 	return inst;
+// };
+
+// $$$.addPanel = function(name) {
+// 	const panel = $$$.newComponent('panel-' + name, '#panels');
+// 	$$$.fx.fadeIn(panel.$el);
+// 	trace(panel.$el);
+// 	//_.defer(() => );
+// 	$$$.emit('dom-changed')
+//
+// 	return panel;
+// };
 
 $$$.loadVuePage = function(pagePath, pageVue, pageProps) {
 	const watchers = _.remap(pageVue.props, (key, value) => {

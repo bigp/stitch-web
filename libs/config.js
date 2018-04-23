@@ -6,7 +6,7 @@ const cookieSecret = 'stitch';
 
 module.exports = {
 	isSlowRefresh: false,
-	autoOpen: false,
+	autoOpen: true,
     web: {
         port: 9999,
         routes: {
@@ -25,7 +25,7 @@ module.exports = {
 	spritesmith: {
 		quality: 80,
 		padding: 2,
-		output: $$$.paths.public + "/dist/atlas.png",
+		//output: $$$.paths.public + "/dist/atlas.png",
 	},
 
 	cookieSession: {

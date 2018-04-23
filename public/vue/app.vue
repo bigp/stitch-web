@@ -1,12 +1,17 @@
 <template>
-    <div>
+    <div class="app fullsize">
         <top-bar></top-bar>
 
         <div id="master">
             <router-view :key="$route.fullPath"></router-view>
         </div>
 
-        <mode-selector></mode-selector>
+        <div id="panels" class="fullsize">
+            <!-- Panels are dynamically added here -->
+            <div v-for="(panel, p) in panels"
+                 :is="panel.name">
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -26,14 +31,14 @@
 					{name: 'Invoices', color: '#08f', icon: 'file', desc: 'Bill your clients and get paid!'},
 				],
 
-				breadcrumbs: []
+				breadcrumbs: [],
+				panels: []
 			}
         },
 
         methods: {
 			showModeSelector() {
-				$$$.fx.fadeIn('#mode-selector');
-
+				$$$.panelManager.push('mode-selector');
             },
 
 			onMenuClick(menu) {

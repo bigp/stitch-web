@@ -7,6 +7,10 @@ body {
   --bgColorDark: #a77;
 }
 
+#app {
+
+}
+
 @mixin debug() {
   background: rgba(255, 0, 0, 0.25);
 }
@@ -91,16 +95,15 @@ body {
   }
 }
 
-#mode-selector .panel {
+#mode-selector {
   position: absolute;
-  width: 600px;
-  height: 400px;
-  background: rgba(200, 200, 200, 0.9);
-  padding: 0px;
-  @include border-radius(10px);
+  display: inline-block;
 
-  display:grid;
-  grid-template-columns: 100%;
+  .panel {
+    width: 600px;
+    height: 400px;
+    background: rgba(200, 200, 200, 0.9);
+  }
 
   .box {
     @include border-radius(20px);
@@ -150,16 +153,33 @@ body {
 }
 
 #user-login {
-  background: #fff;
-  border: solid 2px #888;
-  border-radius: 8px;
-  position: absolute;
-  display: block;
-  z-index: 9999;
-  width: 300px;
-  height: 200px;
+  //position: absolute;
+  //display: block;
+  //z-index: 9999;
 
-  padding: 10px;
+  .panel {
+    background: #fff;
+    border: solid 2px #888;
+    border-radius: 8px;
+    width: 350px;
+    height: 200px;
+    padding: 10px;
+  }
+
+  .field {
+    display: inline-block;
+    padding: 0px 3px;
+  }
+
+  .field-label {
+    width: 150px;
+    text-align: right;
+  }
+
+  .field-value {
+    width: 150px;
+    text-align: left;
+  }
 }
 
 ////////////////////// PAGE-PROJECT
@@ -212,7 +232,7 @@ body {
   font-family: monospace;
 }
 
-.fader {
+.modal-fader {
   position: absolute;
   background: rgba(0,0,0,0.5);
 }
@@ -220,4 +240,13 @@ body {
 .grid-50-50 {
   display: grid;
   grid-template-columns: 50% 50%;
+}
+
+.panel {
+  position: absolute;
+  padding: 0px;
+  @include border-radius(10px);
+
+  display: grid;
+  grid-template-columns: 100%;
 }

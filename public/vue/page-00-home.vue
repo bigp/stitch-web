@@ -16,7 +16,7 @@
     if(timeDiff<1000) {
     	trace("Showing the Home-Screen mode-selector: " + timeDiff);
         _.defer(() => {
-            $$$.fx.fadeIn('#mode-selector');
+            this.$app.showModeSelector();
             menu.reset(homeMenu);
         });
 	}

@@ -3,7 +3,7 @@
  */
 
 const LIMIT = 20;
-const TIME_MS = 1000;
+const TIME_MS = 2000;
 
 export default function SELF() {
 	SELF._reattempts = 0;
