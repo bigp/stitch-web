@@ -1,7 +1,9 @@
 import App from '../vue/app.vue';
 
-import * as uiComps from '../vue/ui/*';
-import * as pages from '../vue/pages/*';
+import * as compsUI from '../vue/ui/*';
+import * as compsPanels from '../vue/panels/*';
+import * as compsMenus from '../vue/menus/*';
+import * as pages from '../vue/_pages/*';
 
 const routes = [];
 
@@ -29,15 +31,17 @@ export default function SELF(config) {
 		}
 	});
 
-	_.forOwn(uiComps, (ui, name) => $$$.loadVueComp(name, ui));
+	_.forOwn(compsUI, (ui, name) => $$$.loadVueComp(name.remove('ui-'), ui));
+	_.forOwn(compsPanels, (ui, name) => $$$.loadVueComp(name, ui));
+	_.forOwn(compsMenus, (ui, name) => $$$.loadVueComp(name.remove('menu-'), ui));
 
 	routes.push({path: '/home/*', redirect: '/home'});
 
 	//Here's some Vue extensions (to quickly get to some common areas throughout the app).
-	_.getset(Vue.prototype, {
-		$app: { get() { return this.$root.$children[0]; }},
-		$super: { get() { return this.$children[0]; }},
-		$global: { get() { return window; }}
+	_.classy(Vue.prototype, {
+		$app() { return this.$root.$children[0]; },
+		$super() { return this.$children[0]; },
+		$global() { return window; },
 	});
 
 	const lookups = {};
@@ -57,35 +61,29 @@ export default function SELF(config) {
 					el.addEventListener(event, cb);
 				})
 			}
+		},
+		'open-panel': {
+			inserted(el, binding, vnode) {
+				const valueArr = binding.value.split(',');
+				const panelName = valueArr[0];
+				const cb = (e) => $$$.panelManager.push(panelName);
+
+				el.addEventListener('mousedown', cb);
+
+				const methodName = valueArr.length>1 ? valueArr[1] : panelName;
+
+				if(vnode.context[methodName]) {
+					traceError(`Warning! You are overwriting an existing method with a [${binding.rawName}="${binding.expression}"] directive!`);
+				}
+
+				//Create a method with the same name as the panel
+				vnode.context[methodName] = cb;
+			}
 		}
-	})
+	});
 
 	registerComponents({
-		'icon': {
-			props: ['name'],
-			template: `<i :class="'fa fa-'+name" v-forward-events></i>`
-		},
 		'outer': { template: `<div class="inner"><slot></slot></div>` },
-		'goto': {
-			props: ['to'],
-			noDiv: true,
-			methods: {
-				doClick(e) {
-					this.$app.gotoRoute(this.to);
-					this.$emit('click', e);
-				}
-			},
-			template: `<a class="smart-link" href="javascript:;" @mousedown="doClick"><slot></slot></a>`
-		},
-		'field': {
-			props: ['name', 'label', 'value'],
-			template: `
-			<i class="field field-label">{{label}}</i>
-			<i class="field field-value">
-				<input :id="name" :name="name" type="text" v-model:value="value" />
-			</i>
-			`
-		}
 	});
 
 	return new Vue({
@@ -118,56 +116,6 @@ $$$.loadVueComp = function(name, compVue) {
 	Vue.component(name, comp);
 };
 
-$$$.panelManager = {
-	push(name, options) {
-		if(!name.startsWith('panel-')) name = 'panel-' + name;
-		const panelData = _.extend(options, {name: name});
-
-		trace();
-
-		this.$panels.push(panelData);
-		return panelData;
-	},
-	pop() {
-		return this.$panels.pop();
-	},
-	remove(name) {
-		if(!name.startsWith('panel-')) name = 'panel-' + name;
-
-		const found = this.$panels.find(p => p.name===name);
-		if(!found) return traceError("Could not remove panel: " + name);
-
-		this.$panels.remove(found);
-
-		return found;
-	}
-};
-
-_.getset($$$.panelManager, {
-	$panels: { get() { return $$$.vue.$app.panels; }}
-});
-
-// $$$.newComponent = function(name, toElement) {
-// 	const comp = $$$.components[name];
-// 	if(!comp) throw 'Could not instantiate component by name: ' + name;
-//
-// 	const inst = new $$$.components[name]().$mount();
-//
-// 	if(toElement) $(toElement).append(inst.$el);
-//
-// 	return inst;
-// };
-
-// $$$.addPanel = function(name) {
-// 	const panel = $$$.newComponent('panel-' + name, '#panels');
-// 	$$$.fx.fadeIn(panel.$el);
-// 	trace(panel.$el);
-// 	//_.defer(() => );
-// 	$$$.emit('dom-changed')
-//
-// 	return panel;
-// };
-
 $$$.loadVuePage = function(pagePath, pageVue, pageProps) {
 	const watchers = _.remap(pageVue.props, (key, value) => {
 		return {
@@ -192,3 +140,28 @@ $$$.loadVuePage = function(pagePath, pageVue, pageProps) {
 		component: pageComp
 	});
 };
+
+_.classy($$$.panelManager = {}, {
+	$panels() { return $$$.vue.$app.panels; },
+	push(name, options) {
+		if(!name.startsWith('panel-')) name = 'panel-' + name;
+		const panelData = _.extend(options, {name: name});
+
+		this.$panels.push(panelData);
+
+		return panelData;
+	},
+	pop() {
+		return this.$panels.pop();
+	},
+	remove(name) {
+		if(!name.startsWith('panel-')) name = 'panel-' + name;
+
+		const found = this.$panels.find(p => p.name===name);
+		if(!found) return traceError("Could not remove panel: " + name);
+
+		this.$panels.remove(found);
+
+		return found;
+	}
+});

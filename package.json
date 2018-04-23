@@ -21,6 +21,7 @@
     "passport-google": "^0.3.0",
     "passport-google-oauth20": "^1.0.0",
     "redis": "^2.8.0",
+    "sass-loader": "^7.0.1",
     "socket.io": "^2.1.0",
     "spritesmith": "^3.3.0",
     "style-loader": "^0.20.3",

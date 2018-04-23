@@ -1,5 +1,5 @@
 <template>
-    <panel id="mode-selector">
+    <panel id="mode-selector" header="Pick a Mode">
         <goto v-for="(menu, i) in $app.topmenus" :key="menu.name"
               class="box pointer"
               @click="onModeSelected(menu)"

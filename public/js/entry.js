@@ -4,8 +4,10 @@
 import '../../libs/extensions';
 import './helpers';
 import './fx';
+import './please-tests';
 import AUTO_OPEN from './auto-open';
 import VUE_SETUP from './vue-setup';
+
 
 $$$(() => {
 	//Make this object an event-emitter:
@@ -35,7 +37,7 @@ function applySpecialSelectors() {
 	//////////////////////////////////////
 
 	function _isCentered() {
-		$('.is-centered').center();
+		$('.is-centered').forEach(el => el.center());
 	}
 
 	function _isHighlighted() {

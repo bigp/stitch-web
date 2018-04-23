@@ -1,8 +1,9 @@
 <template>
-    <div class="fullsize">
+    <div class="panel-container fullsize">
         <div class="modal-fader fullsize"></div>
 
-        <div class="panel box-shadow is-centered">
+        <div :class="'panel box-shadow is-centered ' + subclasses">
+            <h1 v-if="header" class="center">{{header}}</h1>
             <slot></slot>
         </div>
     </div>
@@ -10,6 +11,7 @@
 
 <script>
 	export default {
+		props: ['header','subclasses'],
 		data() {
 			return {
 				isVisible: false

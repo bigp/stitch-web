@@ -125,21 +125,106 @@
 			}
 		});
 
-		_.remap = (obj, cb) =>{
-			var result = {};
-			_.keysIn(obj).forEach((key, value) => {
-				var cbResult = cb(key, value);
-				result[cbResult.key] = cbResult.value;
-			})
+		_.extend(_, {
+			remap(obj, cb) {
+				var result = {};
+				_.keysIn(obj).forEach((key, value) => {
+					var cbResult = cb(key, value);
+					result[cbResult.key] = cbResult.value;
+				})
 
-			return result;
-		}
+				return result;
+			},
 
-		_.getset = (proto, obj) => {
-			_.forOwn(obj, (getset, key) => {
-				Object.defineProperty(proto, key, getset)
-			});
-		}
+			getset(proto, obj) {
+				_.forOwn(obj, (getset, key) => {
+					Object.defineProperty(proto, key, getset)
+				});
+			},
+
+			classy(obj, definition) {
+				const getsets = {};
+				let hasGetSets = false;
+
+				_.forOwn(definition, (valueOrFunc, name) => {
+					if(name.startsWith('$')) {
+						//This is a getter:
+						getsets[name] = {get:valueOrFunc};
+						hasGetSets = true;
+					} else if(name.startsWith('get_')) {
+						const shortname = name.remove('get_');
+						const setterName = 'set_' + shortname;
+
+						const getset = {get:valueOrFunc};
+						const setter = definition[setterName];
+						if(setter) getset.set = setter;
+
+						getsets[shortname] = getset;
+						hasGetSets = true;
+					} else if(!name.startsWith('set_')) {
+						obj[name] = valueOrFunc;
+					}
+				});
+
+				hasGetSets && _.getset(obj, getsets);
+
+				return obj;
+			},
+
+			/*
+			 This is useful for creating 'test' configurations that needs a bit of delay
+			 at the start of the app.
+
+			 delayMS - The default time to delay tests properties using 'true' flags.
+			   If the property uses a numeric value, it will delay by that value instead.
+
+			 Example:
+				 $$$.PLEASE_TEST = _.delayTest(100, {login: true});
+
+				 //Then you can call it like this:
+
+				  $$$.PLEASE_TEST.login( someLoginFunction );
+
+				  //OR, if the context object has the same name as the test-flag:
+
+				  var obj = {login: function() { ... }};
+				  $$$.PLEASE_TEST.login(obj);
+
+				  //You can also just pass "this" if it has that method too.
+				  $$$.PLEASE_TEST.login(this);
+			  */
+
+			delayTest(defaultMS, testFlags) {
+				const delays = {};
+
+				_.forOwn(testFlags, (value, name) => {
+					if(value===false || value<1) {
+						testFlags[name] = _.noop;
+						return;
+					}
+
+					delays[name] = value===true ? defaultMS : value;
+
+					testFlags[name] = (cb) => {
+						if(!_.isFunction(cb)) {
+							const _this = cb;
+							if(!_this[name]) {
+								traceError(`${_this.name || _this} does not have a "${name}" method to test!`);
+								cb = () => traceError(`*test broken for "${name}"*`);
+							} else {
+								cb = () => _this[name]();
+							}
+						}
+
+						delays[name] && setTimeout(cb, delays[name]);
+					}
+				});
+
+				testFlags._delays = delays;
+
+				return testFlags;
+			}
+		});
 	}
 
 	if(!isNode) {

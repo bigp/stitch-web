@@ -1,5 +1,5 @@
 <template>
-    <div class="padded">
+    <div class="padded page-project page-bg fullsize" :style="$app.getMenuCSS()">
         <!-- This is the Home page, no data needed, just show the #mode-selector -->
         <h1>Welcome to Stitch-Web!</h1>
 
@@ -12,7 +12,8 @@
 
 <script>
 
-    const timeStart = new Date().getTime();
+ const timeStart = new Date().getTime();
+
  export default {
   mounted() {
 	var menu = this.$lookup('menu');
@@ -30,4 +31,5 @@
 	}
   }
  }
+
 </script>

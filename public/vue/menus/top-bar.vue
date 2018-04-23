@@ -16,9 +16,9 @@
             <li>Tools</li>
         </ul>
         <ul id="right-bar" class="pointer">
-            <icon name="user" id="user-icon" @mousedown="login()"></icon>
-            <icon name="question-circle"></icon>
-            <icon name="bug"></icon>
+            <icon name="user" id="user-icon" v-open-panel="'login'"></icon>
+            <icon name="question-circle" v-open-panel="'help'"></icon>
+            <icon name="bug" v-open-panel="'bug'"></icon>
         </ul>
     </div>
 </template>
@@ -98,11 +98,7 @@ export default {
             }
 
             $$$.fx.fadeIn($modeSelector);
-        },
-
-		login() {
-        	$$$.panelManager.push('user-login');
-		}
+        }
     },
 
     mounted() {
@@ -110,9 +106,9 @@ export default {
 
         this.$lookup('menu', this);
 
-        true && setTimeout(() => {
-        	this.login();
-        }, 500)
+		$$$.PLEASE_TEST.login(this);
+		$$$.PLEASE_TEST.help(this);
+		$$$.PLEASE_TEST.bug(this);
     }
 };
 </script>

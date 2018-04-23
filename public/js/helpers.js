@@ -1,22 +1,6 @@
 /**
  * Created by Chamberlain on 4/6/2018.
  */
-// $$$.deferOnce = function(cb) {
-// 	cb._isCalled = false;
-//
-// 	return function() {
-// 		if(cb._isCalled) return;
-// 		cb._isCalled = true;
-//
-// 		var _this = this;
-// 		var args = arguments;
-//
-// 		_.defer(() => {
-// 			cb._isCalled = false;
-// 			cb.apply(_this, args);
-// 		})
-// 	}
-// };
 
 $$$.deferFrames = function(frames, cb) {
 	function _loop() {
@@ -42,11 +26,14 @@ _.extend(EventEmitter.prototype, {
 });
 
 _.extend(jQuery.fn, {
+	forEach(cb) {
+		this.each((e, el) => cb( $(el) ));
+	},
 	center() {
-		const rect = $(window);
+		const $window = $(window);
 		this.css("position","absolute");
-		this.css("top", ( rect.height() - this.height() ) / 2 + rect.scrollTop() + "px");
-		this.css("left", ( rect.width() - this.width() ) / 2 + rect.scrollLeft() + "px");
+		this.css("top", ( $window.height() - this.height() ) / 2 + $window.scrollTop() + "px");
+		this.css("left", ( $window.width() - this.width() ) / 2 + $window.scrollLeft() + "px");
 		return this;
 	},
 

@@ -60,8 +60,6 @@ module.exports = {
 
 		module: {
 			rules: [
-				{ test: /\.css$/, use: [ 'style-loader', 'css-loader' ] },
-				{ test: /\.vue$/, use: [ 'vue-loader' ] },
 				{ test: /\.js$/, use: {
 					loader: 'babel-loader',
 					options: {
@@ -69,7 +67,25 @@ module.exports = {
 						presets: ['@babel/preset-env'],
 					}
 				}},
+				{ test: /\.vue$/, use: {
+					loader: 'vue-loader',
+					options: {
+						loaders: {
+							template: 'html-loader',
+							js: 'babel-loader',
+							scss: 'vue-style-loader!css-loader!sass-loader?indentedSyntax',
+						}
+					}
+				}},
+				{ test: /\.s[a|c]ss$/, use: ['sass-loader']},
+				{ test: /\.css$/, use: [ 'style-loader', 'css-loader' ] },
 			]
+		},
+
+		resolveLoader: {
+			alias: {
+				'scss-loader': 'sass-loader',
+			},
 		},
 
 		optimization: {
