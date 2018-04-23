@@ -153,10 +153,6 @@ body {
 }
 
 #user-login {
-  //position: absolute;
-  //display: block;
-  //z-index: 9999;
-
   .panel {
     background: #fff;
     border: solid 2px #888;
@@ -172,7 +168,7 @@ body {
   }
 
   .field-label {
-    width: 150px;
+    width: 120px;
     text-align: right;
   }
 
@@ -213,6 +209,13 @@ body {
   .project-launcher-box {
     width: 400px;
   }
+}
+
+.welcome {
+  margin-top: 10px;
+  display: inline-block;
+  background: #ddd;
+  border-radius: 10px;
 }
 
 

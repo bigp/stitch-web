@@ -35,7 +35,6 @@ function applySpecialSelectors() {
 	//////////////////////////////////////
 
 	function _isCentered() {
-		trace("Recenter...");
 		$('.is-centered').center();
 	}
 

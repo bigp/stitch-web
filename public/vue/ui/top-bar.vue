@@ -102,18 +102,6 @@ export default {
 
 		login() {
         	$$$.panelManager.push('user-login');
-
-//        	const panel = $('#user-panel');
-//        	trace(panel);
-//
-//			$.post('./auth')
-//				.then( loginData => {
-//					trace("LOGIN DATA is:");
-//					trace(loginData);
-//				})
-//				.catch( err => {
-//					trace("Error");
-//				})
 		}
     },
 
@@ -122,7 +110,7 @@ export default {
 
         this.$lookup('menu', this);
 
-        false && setTimeout(() => {
+        true && setTimeout(() => {
         	this.login();
         }, 500)
     }

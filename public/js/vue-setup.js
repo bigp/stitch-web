@@ -1,7 +1,7 @@
 import App from '../vue/app.vue';
 
-import * as uiComps from '../vue/ui-*';
-import * as pages from '../vue/page-*';
+import * as uiComps from '../vue/ui/*';
+import * as pages from '../vue/pages/*';
 
 const routes = [];
 
@@ -29,10 +29,7 @@ export default function SELF(config) {
 		}
 	});
 
-	_.forOwn(uiComps, (ui, name) => {
-		const shortName = name.remove('ui-');
-		$$$.loadVueComp(shortName, ui);
-	});
+	_.forOwn(uiComps, (ui, name) => $$$.loadVueComp(name, ui));
 
 	routes.push({path: '/home/*', redirect: '/home'});
 

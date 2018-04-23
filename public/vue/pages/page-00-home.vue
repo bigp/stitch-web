@@ -1,5 +1,13 @@
 <template>
-    <!-- This is the Home page, no data needed, just show the #mode-selector -->
+    <div class="padded">
+        <!-- This is the Home page, no data needed, just show the #mode-selector -->
+        <h1>Welcome to Stitch-Web!</h1>
+
+        <div class="welcome padded-2 box-shadow">
+            <p>This tool is designed to greatly improve your Creative Ads workflow!</p>
+            <p>From concept to invoicing, you can do it all here!</p>
+        </div>
+    </div>
 </template>
 
 <script>
