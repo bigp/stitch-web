@@ -138,8 +138,3 @@ $$$.loadVuePage = function(pagePath, pageVue, pageProps) {
 		component: pageComp
 	});
 };
-
-$$$.listeners = function() {
-	trace(this.$listeners);
-	return {input: 'um what'}; //this.$listeners
-}
