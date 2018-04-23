@@ -8,19 +8,40 @@ import AUTO_OPEN from './auto-open';
 import VUE_SETUP from './vue-setup';
 
 $$$(() => {
+	//Make this object an event-emitter:
+	_.extend($$$, EventEmitter.prototype);
+	$$$._events = {};
+
 	$$$.io = io({ reconnection: false });
 	$$$.vue = VUE_SETUP();
 	$$$.autoOpen = AUTO_OPEN();
 
 	$$$.vue.$lookup('menu').init();
 
-	$$$.applySpecialSelectors();
+	applySpecialSelectors();
+});
 
-	_.defer(() => {
+function applySpecialSelectors() {
+	window.addEventListener('resize', _isCentered);
+	$$$.onLater('style-changed', -3, _isCentered);
+	_.defer(_isCentered);
+
+	TweenMax.set('.init-hidden', {alpha:0});
+	$('.init-hidden').removeClass('init-hidden').hide();
+
+	_.defer(_isHighlighted);
+
+	//////////////////////////////////////
+
+	function _isCentered() {
+		$('.is-centered').center();
+	}
+
+	function _isHighlighted() {
 		var jsBlocks = $('pre .code-javascript');
 		jsBlocks.each((i, block) => {
 			trace(block);
 			hljs.highlightBlock(block);
 		});
-	})
-});
+	}
+}

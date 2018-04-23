@@ -22,6 +22,12 @@ module.exports = {
 		},
     },
 
+	spritesmith: {
+		quality: 80,
+		padding: 2,
+		output: $$$.paths.public + "/dist/atlas.png",
+	},
+
 	cookieSession: {
 		name: 'session',
 		keys: [cookieSecret]

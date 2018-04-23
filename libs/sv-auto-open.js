@@ -3,7 +3,7 @@
  */
 const opn = require('opn');
 const moment = require('moment');
-const MAX_TIME_TO_OPEN = 2500;
+const MAX_TIME_TO_OPEN = 2800;
 let lastChecked = moment();
 
 function SELF(config) {

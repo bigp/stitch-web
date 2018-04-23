@@ -36,9 +36,8 @@ export default function SELF(config) {
 
 	//Here's some Vue extensions (to quickly get to some common areas throughout the app).
 	_.getset(Vue.prototype, {
-		$app: {
-			get() { return this.$root.$children[0]; }
-		}
+		$app: { get() { return this.$root.$children[0]; }},
+		$global: { get() { return window; }}
 	});
 
 	const lookups = {};
@@ -50,10 +49,21 @@ export default function SELF(config) {
 		return lookups[tag];
 	};
 
+	registerDirectives({
+		'forward-events': {
+			inserted(el, binding, vnode) {
+				const listeners = vnode.context.$listeners;
+				_.forOwn(listeners, (cb, event) => {
+					el.addEventListener(event, cb);
+				})
+			}
+		}
+	})
+
 	registerComponents({
 		'icon': {
 			props: ['name'],
-			template: `<i :class="'fa fa-'+name"></i>`
+			template: `<i :class="'fa fa-'+name" v-forward-events></i>`
 		},
 		'outer': { template: `<div class="inner"><slot></slot></div>` },
 		'goto': {
@@ -66,6 +76,15 @@ export default function SELF(config) {
 				}
 			},
 			template: `<a class="smart-link" href="javascript:;" @mousedown="doClick"><slot></slot></a>`
+		},
+		'field': {
+			props: ['name', 'label', 'value'],
+			template: `
+			<i class="field-label"></i>
+			<i class="field-value">
+				<input :id="name" :name="name" type="text" v-model:value="value" />
+			</i>
+			`
 		}
 	});
 
@@ -85,6 +104,12 @@ function registerComponents(comps) {
 
 		$$$.loadVueComp(compName, comp);
 	});
+}
+
+function registerDirectives(directives) {
+	_.forOwn(directives, (dir, dirName) => {
+		Vue.directive(dirName, dir);
+	})
 }
 
 $$$.loadVueComp = (name, compVue) => Vue.component(name, Vue.extend(compVue));
@@ -113,3 +138,8 @@ $$$.loadVuePage = function(pagePath, pageVue, pageProps) {
 		component: pageComp
 	});
 };
+
+$$$.listeners = function() {
+	trace(this.$listeners);
+	return {input: 'um what'}; //this.$listeners
+}

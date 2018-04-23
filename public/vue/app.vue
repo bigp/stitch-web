@@ -3,7 +3,7 @@
         <top-bar></top-bar>
 
         <div id="master">
-            <router-view></router-view>
+            <router-view :key="$route.fullPath"></router-view>
         </div>
 
         <mode-selector></mode-selector>

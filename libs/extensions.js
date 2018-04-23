@@ -93,6 +93,9 @@
 		});
 
 		_.extend(Array.prototype, {
+			last() {
+				return !this.length ? null : this[this.length-1];
+			},
 			has() {
 				for(var a=0; a<arguments.length; a++) {
 					if(this.indexOf(arguments[a]) > -1) return true;
@@ -141,7 +144,7 @@
 
 	if(!isNode) {
 		const inits = [];
-		const $$$ = GLOBALS.$$$ = cb => inits.push(cb)
+		const $$$ = GLOBALS.$$$ = cb => inits.push(cb);
 
 		$(document).ready(() => inits.forEach(cb => cb()));
 	}

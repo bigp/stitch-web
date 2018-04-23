@@ -1,22 +1,45 @@
 /**
  * Created by Chamberlain on 4/6/2018.
  */
-$$$.deferOnce = function(cb) {
-	cb._isCalled = false;
+// $$$.deferOnce = function(cb) {
+// 	cb._isCalled = false;
+//
+// 	return function() {
+// 		if(cb._isCalled) return;
+// 		cb._isCalled = true;
+//
+// 		var _this = this;
+// 		var args = arguments;
+//
+// 		_.defer(() => {
+// 			cb._isCalled = false;
+// 			cb.apply(_this, args);
+// 		})
+// 	}
+// };
 
-	return function() {
-		if(cb._isCalled) return;
-		cb._isCalled = true;
+$$$.deferFrames = function(frames, cb) {
+	function _loop() {
+		if((--frames)>0) return requestAnimationFrame(_loop);
 
-		var _this = this;
-		var args = arguments;
-
-		_.defer(() => {
-			cb._isCalled = false;
-			cb.apply(_this, args);
-		})
+		cb();
 	}
+
+	_loop();
 };
+
+_.extend(EventEmitter.prototype, {
+	onLater(name, framesOrMS, cb) {
+		if(framesOrMS<0) {
+			framesOrMS = -framesOrMS;
+			return this.on(name, () => $$$.deferFrames(framesOrMS, cb))
+		}
+
+		this.on(name, () => {
+			setTimeout(cb, framesOrMS);
+		});
+	}
+});
 
 _.extend(jQuery.fn, {
 	center() {
@@ -41,19 +64,6 @@ _.extend(jQuery.fn, {
 	}
 });
 
-$$$.addEventAndExec = function(event, func, target) {
-	if(!target) target = window;
-	target.addEventListener(event, func);
-	func();
-};
-
-$$$.applySpecialSelectors = function() {
-	$$$.addEventAndExec('resize', () => $('.is-centered').center());
-
-	TweenMax.set('.init-hidden', {alpha:0});
-	$('.init-hidden').removeClass('init-hidden').hide();
-};
-
 $$$.css = function(styles) {
 	const css = [];
 	_.forIn(styles, (value, key) => {
@@ -70,4 +80,32 @@ $$$.css.vars = function(vars) {
 	});
 
 	return css.join('; ');
+};
+
+
+$$$.send = function(obj) {
+	if(_.isString(obj)) obj = {url: obj};
+
+	$$$.emit('load-start', obj.url);
+
+	return new Promise((_then, _catch) => {
+		obj = _.merge({
+			type: 'POST',
+			data: {sending: 1},
+			contentType: "application/json",
+			dataType: 'json',
+			success(ok) {
+				$$$.emit('load-end', obj.url);
+
+				_then(ok);
+			},
+			error(err) {
+				$$$.emit('load-end', obj.url);
+
+				_catch(err);
+			}
+		}, obj);
+
+		$.ajax(obj);
+	})
 };

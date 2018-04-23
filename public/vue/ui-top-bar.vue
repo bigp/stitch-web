@@ -16,93 +16,115 @@
             <li>Tools</li>
         </ul>
         <ul id="right-bar" class="pointer">
+            <icon name="user" id="user-icon" @click="login()"></icon>
             <icon name="question-circle"></icon>
             <icon name="bug"></icon>
         </ul>
+
+        <div id="user-login" class="is-centered">
+            <h3>User Login</h3>
+            <hr/>
+            <field label="firstname" value="First Name"></field>
+        </div>
     </div>
 </template>
 
 <script>
-    var _this;
-	const CRUMB_0 = '.breadcrumb .cr-0';
 
-	$(document).keydown( e => {
-		switch(e.key) {
-			case ' ': _this.pushMenu(_this.$app.topmenus[1]); break;
-			case 'Backspace': _this.popMenu(); break;
+let _this;
+const CRUMB_0 = '.breadcrumb .cr-0';
+
+$(document).keydown( e => {
+    switch(e.key) {
+        case ' ': _this.pushMenu(_this.$app.topmenus[1]); break;
+        case 'Backspace': _this.popMenu(); break;
+    }
+});
+
+export default {
+    computed: {
+
+    },
+
+    methods: {
+        _fixStyle() {
+            const _this = this;
+            if(_this._isFixing) return;
+
+            _.defer(function() {
+                $(CRUMB_0).setClassIf('cr-single', _this.$app.breadcrumbs.length===1);
+                _this._isFixing = false;
+            });
+        },
+
+        init() {
+            const routeName = this.$app.getRouteName();
+            const first = this.$app.topmenus.find(m => m.name.toLowerCase()===routeName);
+            this.reset(first);
+        },
+
+        reset(menus) {
+            this.$app.breadcrumbs = _.castArray(menus || []);
+            this._fixStyle();
+        },
+
+        pushMenu(menu) {
+            this.$app.breadcrumbs.push(menu);
+            this._fixStyle();
+        },
+
+        popMenu() {
+            if(this.$app.breadcrumbs.length===1) {
+                return TweenMax.fromTo(
+                    CRUMB_0,
+                    0.5,
+                    {css: {color:'#f00'}},
+                    {css: {color:'#fff'}, ease: Bounce.easeOut });
+            }
+
+            this.$app.breadcrumbs.pop();
+            this._fixStyle();
+        },
+
+        onTopMenu(menu, isSelected) {
+            const $modeSelector = $('#mode-selector');
+            const modeName = menu.name.toLowerCase();
+            const $modeSelected = $modeSelector.find('.mode-' + modeName);
+
+            if(isSelected || $modeSelector.is(':visible')) {
+                if(isSelected) {
+                    _this.reset(menu);
+                    $$$.router.push({name:modeName});
+
+                    trace($$$.router.currentRoute);
+
+                    $$$.fx.fadeIn('#master', true);
+                }
+                return $$$.fx.fadeOut('#mode-selector');
+            }
+
+            $$$.fx.fadeIn($modeSelector);
+        },
+
+		login() {
+        	const panel = $('#user-panel');
+        	trace(panel);
+
+			$.post('./auth')
+				.then( loginData => {
+					trace("LOGIN DATA is:");
+					trace(loginData);
+				})
+				.catch( err => {
+					trace("Error");
+				})
 		}
-	});
+    },
 
-	export default {
-		computed: {
+    mounted() {
+        _this = this;
 
-        },
-
-        methods: {
-            _fixStyle() {
-            	const _this = this;
-            	if(_this._isFixing) return;
-
-				_.defer(function() {
-					$(CRUMB_0).setClassIf('cr-single', _this.$app.breadcrumbs.length===1);
-					_this._isFixing = false;
-                });
-            },
-
-			init() {
-				const routeName = this.$app.getRouteName();
-				const first = this.$app.topmenus.find(m => m.name.toLowerCase()===routeName);
-				this.reset(first);
-			},
-
-			reset(menus) {
-				this.$app.breadcrumbs = _.castArray(menus || []);
-				this._fixStyle();
-			},
-
-			pushMenu(menu) {
-				this.$app.breadcrumbs.push(menu);
-				this._fixStyle();
-			},
-
-			popMenu() {
-				if(this.$app.breadcrumbs.length===1) {
-					return TweenMax.fromTo(
-						CRUMB_0,
-						0.5,
-						{css: {color:'#f00'}},
-						{css: {color:'#fff'}, ease: Bounce.easeOut });
-				}
-
-				this.$app.breadcrumbs.pop();
-				this._fixStyle();
-			},
-
-			onTopMenu(menu, isSelected) {
-				const $modeSelector = $('#mode-selector');
-				const modeName = menu.name.toLowerCase();
-				const $modeSelected = $modeSelector.find('.mode-' + modeName);
-
-				if(isSelected || $modeSelector.is(':visible')) {
-					if(isSelected) {
-						_this.reset(menu);
-						$$$.router.push({name:modeName});
-
-						trace($$$.router.currentRoute);
-
-						$$$.fx.fadeIn('#master', true);
-					}
-					return $$$.fx.fadeOut('#mode-selector');
-				}
-
-				$$$.fx.fadeIn($modeSelector);
-			}
-        },
-
-        mounted() {
-			_this = this;
-
-			this.$lookup('menu', this);
-        }
-	};
+        this.$lookup('menu', this);
+    }
+};
 </script>

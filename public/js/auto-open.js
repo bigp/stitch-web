@@ -41,18 +41,21 @@ export default function SELF() {
 				$('link[hot-reload]').each((i, link) => {
 					link.href = link.href.split('?')[0] + "?id=" + $$$.randID();
 				});
+
+				$$$.emit('style-changed');
 				break;
 			case 'html':
 			case 'js':
-				trace("FORCE RELOAD: " + file);
-				setTimeout(() => {
-					window.location.reload(true);
-				}, 100);
+				$$$.emit('force-reload');
 				break;
 			default:
 				trace("Another type changed: " + file);
 				break;
 		}
+	});
+
+	$$$.onLater('force-reload', 100, () => {
+		window.location.reload(true);
 	});
 
 	return SELF;

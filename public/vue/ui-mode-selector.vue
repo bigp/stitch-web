@@ -23,45 +23,44 @@
 export default {
 	data() {
 		return {
-			isVisible:false
+			isVisible: false
 		}
-    } ,
+	},
 
-	computed: {
-
-    },
+	computed: {},
 
 	methods: {
 		fadeOut(isForced) {
 			$$$.fx.fadeOut(this.$el);
 			isForced && this.$forceUpdate();
-        },
+		},
 
 		getCSS(menu) {
 			var lowcase = menu.name.toLowerCase();
 			return [
 				'mode-' + lowcase,
-                {selected: lowcase===this.$app.getRouteName()}
-            ];
-        },
+				{selected: lowcase === this.$app.getRouteName()}
+			];
+		},
 
 		onModeSelected(menu) {
 			this.fadeOut(true);
 		}
-    },
+	},
 
-    mounted() {
-        var _this = this;
+	mounted() {
+		var _this = this;
 
 		$(this.$el).find('.fader').click(() => {
 			_this.fadeOut();
 		});
 
-        $(window).keydown(e => {
-        	if(!_this.isVisible) return;
+		$(window).keydown(e => {
+			if (!_this.isVisible) return;
 			_this.fadeOut();
-        })
-    }
+		})
+	}
 }
+
 
 </script>

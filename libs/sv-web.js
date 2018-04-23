@@ -1,19 +1,28 @@
 const fs = require('fs-extra');
+const url = require('url');
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
-const passport = require('passport');
-const redis = require('redis');
-const RedisStore = require('connect-redis')(session);
 const app = express();
 const http = require('http');
 const mime = require('mime-types');
 const server = http.createServer(app);
 const socketIO = require('socket.io');
+//const passport = require('passport');
+const redis = require('redis');
+const RedisStore = require('connect-redis')(session);
 
 function debug() { } //trace.apply(null, arguments);
+
+$$$.fullUrl = function(req) {
+	return url.format({
+		protocol: req.protocol,
+		host: req.get('host'),
+		pathname: req.originalUrl
+	});
+}
 
 function SELF(config) {
 	if(!config.web) throw 'Missing "config.web" field in configuration file.';
@@ -31,10 +40,10 @@ function SELF(config) {
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({extended: true}));
 	app.use(session(sessionConfig));
-	app.use(passport.initialize());
-	app.use(passport.session());
 
-	trace("SESSION ADDED with PASSPORT...".cyan);
+	//app.use(passport.initialize());
+	//app.use(passport.session());
+	//trace("SESSION ADDED with PASSPORT...".cyan);
 
 	SELF.ioInit(config.io || {});
 
