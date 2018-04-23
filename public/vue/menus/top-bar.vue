@@ -78,26 +78,6 @@ export default {
 
             this.$app.breadcrumbs.pop();
             this._fixStyle();
-        },
-
-        onTopMenu(menu, isSelected) {
-            const $modeSelector = $('#mode-selector');
-            const modeName = menu.name.toLowerCase();
-            const $modeSelected = $modeSelector.find('.mode-' + modeName);
-
-            if(isSelected || $modeSelector.is(':visible')) {
-                if(isSelected) {
-                    _this.reset(menu);
-                    $$$.router.push({name:modeName});
-
-                    trace($$$.router.currentRoute);
-
-                    $$$.fx.fadeIn('#master', true);
-                }
-                return $$$.fx.fadeOut('#mode-selector');
-            }
-
-            $$$.fx.fadeIn($modeSelector);
         }
     },
 
