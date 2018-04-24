@@ -183,6 +183,19 @@ body {
   }
 }
 
+#settings {
+  .message {
+    position: absolute;
+    display: inline-block;
+    top:50px;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    padding: 10px;
+    //background: #ff000088;
+  }
+}
+
 
 ////////////////////// PAGE-PROJECT
 
@@ -257,6 +270,8 @@ body {
 }
 
 .panel {
+  width: 400px;
+  height: 200px;
   position: absolute;
   padding: 10px;
   @include border-radius(10px);

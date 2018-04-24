@@ -17,6 +17,7 @@
         </ul>
         <ul id="right-bar" class="pointer">
             <icon name="user" id="user-icon" v-open-panel="'login'"></icon>
+            <icon name="cog" v-open-panel="'settings'"></icon>
             <icon name="question-circle" v-open-panel="'help'"></icon>
             <icon name="bug" v-open-panel="'bug'"></icon>
         </ul>
@@ -83,6 +84,7 @@ export default {
         this.$lookup('menu', this);
 
 		$$$.PLEASE_TEST
+            .settings(this)
             .login(this)
             .help(this)
             .bug(this);
