@@ -5,6 +5,7 @@
         <div :class="'panel box-shadow is-centered ' + subclasses">
             <h1 v-if="header" class="center">{{header}}</h1>
             <slot></slot>
+            <btn icon="close" @mousedown="fadeOut()"></btn>
         </div>
     </div>
 </template>

@@ -2,21 +2,11 @@
  * Created by Chamberlain on 4/6/2018.
  */
 
-$$$.deferFrames = function(frames, cb) {
-	function _loop() {
-		if((--frames)>0) return requestAnimationFrame(_loop);
-
-		cb();
-	}
-
-	_loop();
-};
-
 _.extend(EventEmitter.prototype, {
 	onLater(name, framesOrMS, cb) {
 		if(framesOrMS<0) {
 			framesOrMS = -framesOrMS;
-			return this.on(name, () => $$$.deferFrames(framesOrMS, cb))
+			return this.on(name, () => _.deferFrames(framesOrMS, cb))
 		}
 
 		this.on(name, () => {

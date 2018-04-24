@@ -24,5 +24,9 @@ $$$.fx = {
 			$(el).hide();
 			onComplete && onComplete();
 		}});
+	},
+
+	flashColor(el, from, to, time=0.3) {
+		return TweenMax.fromTo(el, time, {color:from}, {color:to, ease: Bounce.easeOut });
 	}
 }

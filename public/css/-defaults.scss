@@ -25,6 +25,18 @@ code {
   box-shadow: 1px 1px 4px 1px rgba(0,0,0,0.5) inset;
 }
 
+body {
+  --btnHover: #fff;
+  --btnNormal: transparent;
+}
+
 .center { text-align: center; }
+.btn {
+  display: inline-block;
+  cursor: pointer;
+  background: var(--btnNormal);
+
+  &:hover { background: var(--btnHover); }
+}
 
 @mixin padded($p: 10px) { padding: $p; }

@@ -2,10 +2,10 @@
     <panel id="mode-selector" header="Pick a Mode">
         <goto v-for="(menu, i) in $app.topmenus" :key="menu.name"
               class="box pointer"
-              @click="onModeSelected(menu)"
               :to="{name: menu.name.toLowerCase()}"
               :class="getCSS(menu)"
-              :style="$app.getMenuCSS(menu)">
+              :style="$app.getMenuCSS(menu)"
+              @click="onModeSelected(menu)">
 
             <div class="table">
                 <i class="menu-name"><icon :name="menu.icon"></icon>{{menu.name}} -</i>

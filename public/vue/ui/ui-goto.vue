@@ -1,17 +1,9 @@
 <template>
-    <a class="smart-link" href="javascript:;" @mousedown="doClick">
+    <a class="smart-link" href="javascript:;" @mousedown="$app.gotoRoute(to)" v-forward-events>
         <slot></slot>
     </a>
 </template>
 
 <script>
-    export default {
-		props: ['to'],
-		methods: {
-			doClick(e) {
-				this.$app.gotoRoute(this.to);
-				this.$emit('click', e);
-			}
-		}
-	}
+    export default { props: ['to'] }
 </script>

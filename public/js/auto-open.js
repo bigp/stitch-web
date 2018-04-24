@@ -48,6 +48,10 @@ export default function SELF() {
 			case 'js':
 				$$$.emit('force-reload');
 				break;
+
+			case 'scss':
+			case 'sass':
+			case 'silent-types': break;
 			default:
 				trace("Another type changed: " + file);
 				break;

@@ -125,7 +125,18 @@
 			}
 		});
 
+		const tick = isNode ? process.nextTick : requestAnimationFrame;
+
 		_.extend(_, {
+			deferFrames(frames, cb) {
+				function _loop() {
+					if((--frames)>0) return tick(_loop);
+
+					cb();
+				}
+
+				_loop();
+			},
 			remap(obj, cb) {
 				var result = {};
 				_.keysIn(obj).forEach((key, value) => {
@@ -196,10 +207,11 @@
 
 			delayTest(defaultMS, testFlags) {
 				const delays = {};
+				const returnSelf = () => testFlags;
 
 				_.forOwn(testFlags, (value, name) => {
 					if(value===false || value<1) {
-						testFlags[name] = _.noop;
+						testFlags[name] = returnSelf;
 						return;
 					}
 
@@ -217,6 +229,8 @@
 						}
 
 						delays[name] && setTimeout(cb, delays[name]);
+
+						return testFlags;
 					}
 				});
 

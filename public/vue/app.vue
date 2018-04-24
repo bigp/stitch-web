@@ -36,6 +36,14 @@
 			}
         },
 
+        watch: {
+			'$route'() {
+				this.$lookup('menu').init();
+				
+				_.defer(() => this.$forceUpdate());
+            }
+        },
+
         methods: {
 			showModeSelector() {
 				$$$.panelManager.push('mode-selector');

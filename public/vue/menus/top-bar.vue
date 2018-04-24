@@ -26,7 +26,7 @@
 <script>
 
 let _this;
-const CRUMB_0 = '.breadcrumb .cr-0';
+const CRUMB_FIRST = '.breadcrumb .cr-0';
 
 $(document).keydown( e => {
     switch(e.key) {
@@ -46,7 +46,7 @@ export default {
             if(_this._isFixing) return;
 
             _.defer(function() {
-                $(CRUMB_0).setClassIf('cr-single', _this.$app.breadcrumbs.length===1);
+                $(CRUMB_FIRST).setClassIf('cr-single', _this.$app.breadcrumbs.length===1);
                 _this._isFixing = false;
             });
         },
@@ -69,11 +69,7 @@ export default {
 
         popMenu() {
             if(this.$app.breadcrumbs.length===1) {
-                return TweenMax.fromTo(
-                    CRUMB_0,
-                    0.5,
-                    {css: {color:'#f00'}},
-                    {css: {color:'#fff'}, ease: Bounce.easeOut });
+                return $$$.fx.flashColor(CRUMB_FIRST, '#f00', '#fff');
             }
 
             this.$app.breadcrumbs.pop();
@@ -86,9 +82,10 @@ export default {
 
         this.$lookup('menu', this);
 
-		$$$.PLEASE_TEST.login(this);
-		$$$.PLEASE_TEST.help(this);
-		$$$.PLEASE_TEST.bug(this);
+		$$$.PLEASE_TEST
+            .login(this)
+            .help(this)
+            .bug(this);
     }
 };
 </script>
