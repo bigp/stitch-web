@@ -2,14 +2,25 @@ const Events = require('events');
 global.$$$ = new Events();
 global._ = require('lodash');
 require('./libs/extensions');
+require('./libs/extensions-node');
+require('colors');
 
 const yargs = require('yargs');
 const commands = yargs
 	.alias('p','prod')
 	.alias('v','verbose')
+	.alias('x', 'exp')
 	.argv;
 
+if(commands.x) {
+	$$$.paths = require('./libs/sv-paths');
+	require($$$.paths.experiments + "/_main.js");
+	return;
+}
+
 require('./libs/sv-restarter')(null, () => {
+	trace("Starting...");
+
 	$$$.env = commands.p ? 'prod' : 'dev';
 	$$$.paths = require('./libs/sv-paths');
 

@@ -12,6 +12,7 @@
     "fs-extra": "^5.0.0",
     "imagemin": "^5.3.1",
     "imagemin-pngquant": "^5.1.0",
+    "inquirer": "^6.0.0",
     "lodash": "^4.17.5",
     "memory-fs": "^0.4.1",
     "moment": "^2.22.0",
@@ -20,6 +21,8 @@
     "passport": "^0.4.0",
     "passport-google": "^0.3.0",
     "passport-google-oauth20": "^1.0.0",
+    "prompt-promise": "^1.0.3",
+    "psd": "^3.2.0",
     "redis": "^2.8.0",
     "sass-loader": "^7.0.1",
     "socket.io": "^2.1.0",
@@ -33,7 +36,8 @@
     "redis": "cd .private & cls & redis-server redis.config.ini & cd ../",
     "start": "node index.js",
     "prod": "node index.js -p",
-    "test": "mocha --testing --recursive ./tests/"
+    "test": "mocha --testing --recursive ./tests/",
+    "x": "node index.js --exp"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.44",

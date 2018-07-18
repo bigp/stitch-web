@@ -12,4 +12,5 @@ module.exports = {
 	private: root + '/.private',
 	data: root + '/.private/data',
 	templates: root + '/templates',
+	experiments: root + '/experiments'
 };

@@ -33,14 +33,13 @@ export default function SELF(config) {
 
 	_.forOwn(compsUI, (ui, name) => $$$.loadVueComp(name.remove('ui-'), ui));
 	_.forOwn(compsPanels, (ui, name) => $$$.loadVueComp(name, ui));
-	_.forOwn(compsMenus, (ui, name) => $$$.loadVueComp(name.remove('menu-'), ui));
+	_.forOwn(compsMenus, (ui, name) => $$$.loadVueComp(name, ui));
 
 	routes.push({path: '/home/*', redirect: '/home'});
 
 	//Here's some Vue extensions (to quickly get to some common areas throughout the app).
 	_.classy(Vue.prototype, {
 		$app() { return this.$root.$children[0]; },
-		$super() { return this.$children[0]; },
 		$global() { return window; },
 	});
 

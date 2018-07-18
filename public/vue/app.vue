@@ -15,8 +15,11 @@
     </div>
 </template>
 <script>
+
     const homeMenu = {name: 'Home', path:'/', color: '#456', icon: 'home', desc: 'Welcome to Stitch-Web!'};
-    export default {
+    import FILE_MENUS from '../js/menubar-config';
+
+	export default {
 		data() {
 			return {
 				title: 'Hello World',
@@ -25,13 +28,14 @@
 
 				topmenus: [
 					homeMenu,
-					{name: 'Project',  color: '#f80', icon: 'star', desc: 'Create and Manage your projects and clients.'},
-					{name: 'Designer', color: '#c08', icon: 'object-group', desc: 'Draw and Import assets into a project.'},
-					{name: 'Animator', color: '#0c8', icon: 'play-circle', desc: 'Bring your assets to life in a timeline interface.'},
-					{name: 'Invoices', color: '#08f', icon: 'file', desc: 'Bill your clients and get paid!'},
+					{name: 'Project',  color: '#f80', icon: 'star', menus: FILE_MENUS.PROJECT, desc: 'Create and Manage your projects and clients.'},
+					{name: 'Designer', color: '#c08', icon: 'object-group', menus: FILE_MENUS.DESIGNER, desc: 'Draw and Import assets into a project.'},
+					{name: 'Animator', color: '#0c8', icon: 'play-circle', menus: FILE_MENUS.ANIMATOR, desc: 'Bring your assets to life in a timeline interface.'},
+					{name: 'Invoices', color: '#08f', icon: 'file', menus: FILE_MENUS.INVOICES, desc: 'Bill your clients and get paid!'},
 				],
 
 				breadcrumbs: [],
+                filemenus: [],
 				panels: []
 			}
         },
@@ -41,6 +45,13 @@
 				this.$lookup('menu').init();
 
 				_.defer(() => this.$forceUpdate());
+            }
+        },
+
+        computed: {
+			topmenu() {
+				const routeName = this.$route.name.toLowerCase();
+				return this.topmenus.find(f => f.name.toLowerCase()===routeName);
             }
         },
 
@@ -95,7 +106,21 @@
 					this.$lookup('menu').init();
 					$$$.fx.fadeIn('#master', true);
 				}
-			}
-		}
+			},
+
+            menubar() {
+				const Tools = FILE_MENUS.PROJECT[2];
+				const Macro = Tools.children[0];
+				if(!Tools.$vue) return;
+				Tools.$vue.isOpened = true;
+				Macro.$vue.isOpened = true;
+            }
+		},
+
+        mounted() {
+			$$$.PLEASE_TEST.menubar(this);
+        }
     }
+
+
 </script>

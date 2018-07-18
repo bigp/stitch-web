@@ -5,5 +5,6 @@ $$$.PLEASE_TEST = _.delayTest(50, {
 	login: false,
 	bug: false,
 	help: false,
-	settings: true,
+	settings: false,
+	menubar: true,
 });

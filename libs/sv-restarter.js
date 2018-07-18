@@ -1,7 +1,6 @@
 /**
  * Created by Chamberlain on 3/30/2018.
  */
-require('colors');
 const cluster = require('cluster');
 const trace = console.log.bind(console);
 var isStarted = false;

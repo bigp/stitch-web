@@ -1,5 +1,5 @@
 <template>
-    <div id="top-bar">
+    <div class="top-bar">
         <ul class="breadcrumb pointer">
             <li v-for="(menu, i) in $app.breadcrumbs"
                 :class="'crumb cr-' + i"
@@ -9,12 +9,9 @@
                 <i>{{menu.name}}</i>
             </li>
         </ul>
-        <ul id="menu-bar" class="pointer">
-            <li>File</li>
-            <li>Edit</li>
-            <li>View</li>
-            <li>Tools</li>
-        </ul>
+
+        <menu-bar :source="$app.topmenu.menus"></menu-bar>
+
         <ul id="right-bar" class="pointer">
             <icon name="user" id="user-icon" v-open-panel="'login'"></icon>
             <icon name="cog" v-open-panel="'settings'"></icon>
@@ -25,16 +22,7 @@
 </template>
 
 <script>
-
-let _this;
 const CRUMB_FIRST = '.breadcrumb .cr-0';
-
-$(document).keydown( e => {
-    switch(e.key) {
-        case ' ': _this.pushMenu(_this.$app.topmenus[1]); break;
-        case 'Backspace': _this.popMenu(); break;
-    }
-});
 
 export default {
     computed: {
@@ -43,12 +31,12 @@ export default {
 
     methods: {
         _fixStyle() {
-            const _this = this;
-            if(_this._isFixing) return;
+            if(this._isFixing) return;
+			this._isFixing = true;
 
-            _.defer(function() {
-                $(CRUMB_FIRST).setClassIf('cr-single', _this.$app.breadcrumbs.length===1);
-                _this._isFixing = false;
+            _.defer(() => {
+                $(CRUMB_FIRST).setClassIf('cr-single', this.$app.breadcrumbs.length===1);
+                this._isFixing = false;
             });
         },
 
@@ -79,8 +67,6 @@ export default {
     },
 
     mounted() {
-        _this = this;
-
         this.$lookup('menu', this);
 
 		$$$.PLEASE_TEST
@@ -88,6 +74,19 @@ export default {
             .login(this)
             .help(this)
             .bug(this);
+
+		const onKey = e => {
+			switch(e.key) {
+				case ' ': this.pushMenu(this.$app.topmenus[1]); break;
+				case 'Backspace': this.popMenu(); break;
+			}
+		};
+
+		$(document).keydown( onKey );
+
+		this.$once('hook:destroyed', () => {
+			$$$.off(EVENT_COLLAPSE_ALL, closeFunc);
+		});
     }
 };
 </script>
