@@ -79,9 +79,11 @@
                     bgColorHover: bgColor.brighten(50).toHexString(),
 				});
 			},
+
             getRouteName() {
 				return this.$router.currentRoute.path.split('/')[1];
             },
+
 			getRoutePath(obj) {
 				var r = this.$router.currentRoute;
 

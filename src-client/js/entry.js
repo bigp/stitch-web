@@ -1,13 +1,19 @@
 /**
  * Created by Chamberlain on 3/30/2018.
  */
-import '../../libs/extensions';
-import './helpers';
+import '~extensions';
+import '~bpa-js/helpers';
 import './fx';
 import './please-tests';
-import AUTO_OPEN from './auto-open';
-import VUE_SETUP from './vue-setup';
+import AUTO_OPEN from '~bpa-js/auto-open';
+import VUE_SETUP from '~bpa-js/vue-setup';
 
+import App from '../vue/app.vue';
+
+import common from '~bpa-vue/common.js';
+import * as compsPanels from '../vue/panels/*';
+import * as compsMenus from '../vue/menus/*';
+import * as compsPages from '../vue/_pages/*';
 
 $$$(() => {
 	//Make this object an event-emitter:
@@ -15,8 +21,14 @@ $$$(() => {
 	$$$._events = {};
 
 	$$$.io = io({ reconnection: false });
-	$$$.vue = VUE_SETUP();
 	$$$.autoOpen = AUTO_OPEN();
+	$$$.vue = VUE_SETUP({
+		app: App,
+		ui: common.ui,
+		panels: compsPanels,
+		menus: compsMenus,
+		pages: compsPages
+	});
 
 	$$$.vue.$lookup('menu').init();
 

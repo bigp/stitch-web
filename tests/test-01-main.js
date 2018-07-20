@@ -1,4 +1,4 @@
-require('../libs/extensions');
+require('../src-server/extensions');
 
 test('test', {
     'should pass'() {

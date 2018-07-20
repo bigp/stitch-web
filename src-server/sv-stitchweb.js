@@ -3,19 +3,19 @@
  */
 const fs = require('fs-extra');
 const dbFile = $$$.paths.private + '/db.json';
-const authStrategies = require('./sv-auth-for-passport');
+//const authStrategies = require('./sv-auth-for-passport');
 
 function SELF(config) {
-	$$$.web.setupRoutes({
-		'/u': { //User-Directory:
-			'/*': SELF.authenticate,
-			'/projects'(req, res, next) {
-				trace("We are in projects");
-				res.send("LIST OF PROJECTS");
-			}
-		},
-		'/auth': authStrategies(config).routes()
-	});
+	// $$$.web.setupRoutes({
+	// 	'/u': { //User-Directory:
+	// 		'/*': SELF.authenticate,
+	// 		'/projects'(req, res, next) {
+	// 			trace("We are in projects");
+	// 			res.send("LIST OF PROJECTS");
+	// 		}
+	// 	},
+	// 	'/auth': authStrategies(config).routes()
+	// });
 
 	return SELF;
 }
