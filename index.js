@@ -1,0 +1,1 @@
+trace("In project index.js!".bgGreen);
