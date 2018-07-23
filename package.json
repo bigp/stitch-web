@@ -39,13 +39,6 @@
     "test": "mocha --testing --recursive ./tests/",
     "x": "node index.js --exp"
   },
-  "devDependencies": {
-    "@babel/core": "^7.0.0-beta.44",
-    "@babel/preset-env": "^7.0.0-beta.44",
-    "babel-loader": "^8.0.0-beta",
-    "babel-plugin-wildcard": "^4.0.0",
-    "chai": "^4.1.2"
-  },
   "babel": {
     "presets": [
       "@babel/preset-env"

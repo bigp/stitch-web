@@ -3,41 +3,29 @@
  */
 import '~extensions';
 import '~bpa-js/helpers';
-import './fx';
-import './please-tests';
 import AUTO_OPEN from '~bpa-js/auto-open';
 import VUE_SETUP from '~bpa-js/vue-setup';
 
-import App from '../vue/app.vue';
+import App from './vue/app.vue';
 
 import common from '~bpa-vue/common.js';
-import * as compsPanels from '../vue/panels/*';
-import * as compsMenus from '../vue/menus/*';
-import * as compsPages from '../vue/_pages/*';
+import * as projectUI from './vue/ui/*';
 
 $$$(() => {
-	//Make this object an event-emitter:
-	_.extend($$$, EventEmitter.prototype);
-	$$$._events = {};
-
 	$$$.io = io({ reconnection: false });
 	$$$.autoOpen = AUTO_OPEN();
-	$$$.vue = VUE_SETUP({
+	$$$.vue = VUE_SETUP.init({
 		app: App,
-		ui: common.ui,
-		panels: compsPanels,
-		menus: compsMenus,
-		pages: compsPages
+		components: _.merge(common.ui, projectUI),
 	});
 
-	$$$.vue.$lookup('menu').init();
-
+	trace(common.ui);
 	applySpecialSelectors();
 });
 
 function applySpecialSelectors() {
 	window.addEventListener('resize', _isCentered);
-	$$$.onLater('style-changed', -3, _isCentered);
+	$$$.onLater('EVENT.style-changed', -3, _isCentered);
 	$$$.on('dom-changed', _isCentered);
 	_.defer(_isCentered);
 
@@ -53,8 +41,8 @@ function applySpecialSelectors() {
 	}
 
 	function _isHighlighted() {
-		var jsBlocks = $('pre .code-javascript');
-		jsBlocks.each((i, block) => {
+		var codeBlocks = $('pre .code-javascript');
+		codeBlocks.each((i, block) => {
 			trace(block);
 			hljs.highlightBlock(block);
 		});
