@@ -1,6 +1,7 @@
 <template>
     <div class="app fullsize">
         <smart-button test="bla bla bla"></smart-button>
+        <goto to="miami">Miami</goto>
     </div>
 </template>
 <script>

@@ -17,34 +17,32 @@ $$$(() => {
 	$$$.vue = VUE_SETUP.init({
 		app: App,
 		components: _.merge(common.ui, projectUI),
-	});
+		routes: {
 
-	trace(common.ui);
+		}
+	});
+//
 	applySpecialSelectors();
-});
+});//
 
 function applySpecialSelectors() {
-	window.addEventListener('resize', _isCentered);
-	$$$.onLater('EVENT.style-changed', -3, _isCentered);
-	$$$.on('dom-changed', _isCentered);
-	_.defer(_isCentered);
+	window.addEventListener('resize', isCentered);
+	$$$.onLater('@style-changed', -3, isCentered);
+	$$$.on('@dom-changed', isCentered);
+	_.defer(isCentered);
 
 	TweenMax.set('.init-hidden', {alpha:0});
 	$('.init-hidden').removeClass('init-hidden').hide();
 
-	_.defer(_isHighlighted);
+	_.defer(highlightJavascriptBlocks);
+}
 
-	//////////////////////////////////////
+function isCentered() {
+	$('.is-centered').forEach(el => el.center());
+}
 
-	function _isCentered() {
-		$('.is-centered').forEach(el => el.center());
-	}
-
-	function _isHighlighted() {
-		var codeBlocks = $('pre .code-javascript');
-		codeBlocks.each((i, block) => {
-			trace(block);
-			hljs.highlightBlock(block);
-		});
-	}
+function highlightJavascriptBlocks() {
+	$('pre .code-javascript').each((i, block) => {
+		hljs.highlightBlock(block);
+	});
 }
