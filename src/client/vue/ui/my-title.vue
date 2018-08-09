@@ -1,9 +1,9 @@
 <template>
-    <h1>This is a {{test}}</h1>
+    <h1><slot></slot></h1>
 </template>
 
 <script>
 	export default {
-		props: ['test']
+		props: ['test'] //
 	}
 </script>

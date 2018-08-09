@@ -10,20 +10,19 @@ import App from './vue/app.vue';
 
 import common from '~bpa-vue/common.js';
 import * as projectUI from './vue/ui/*';
+import * as projectViews from './vue/views/*';
 
 $$$(() => {
 	$$$.io = io({ reconnection: false });
 	$$$.autoOpen = AUTO_OPEN();
 	$$$.vue = VUE_SETUP.init({
 		app: App,
-		components: _.merge(common.ui, projectUI),
-		routes: {
+		components: _.merge(common.ui, projectUI, projectViews),
+		routes: []
+	});////
 
-		}
-	});
-//
 	applySpecialSelectors();
-});//
+});
 
 function applySpecialSelectors() {
 	window.addEventListener('resize', isCentered);

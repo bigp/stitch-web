@@ -1,24 +1,29 @@
 <template>
-    <div class="app fullsize">
-        <smart-button test="bla bla bla"></smart-button>
-        <goto to="miami">Miami</goto>
+    <div>
+        <top-bar></top-bar>
+        <div class="main">
+            <projects></projects>
+            <invoices></invoices>
+            <animations></animations>
+            <settings></settings>
+        </div>
+        <div class="popups fullsize">
+            <div class="modal-shadow fullsize" v-if="popups.length > 0"></div>
+        </div>
     </div>
 </template>
+
 <script>
-
-
 	export default {
 		data() {
 			return {
-				title: 'Hello World',
+				popups: [],
 			}
         },
 
         watch: {
 			'$route'() {
-//				this.$lookup('menu').init();
-//
-//				_.defer(() => this.$forceUpdate());
+                //_.defer(() => this.$forceUpdate());
             }
         },
 
@@ -32,8 +37,6 @@
 
         mounted() {
 
-        }
+        },
     }
-
-
 </script>
