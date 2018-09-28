@@ -2,7 +2,7 @@
  * Created by Chamberlain on 7/21/2018.
  */
 
-const cookieSecret = 'stitch';
+const cookieSecret = 'stitch-web';
 
 module.exports = {
 	spritesmith: {
