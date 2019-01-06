@@ -5,6 +5,11 @@
 const cookieSecret = 'stitch-web';
 
 module.exports = {
+	autoOpen: {
+		enabled: false,
+		count: 3,
+	},
+
 	spritesmith: {
 		quality: 80,
 		padding: 2,
