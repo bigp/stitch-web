@@ -8,7 +8,7 @@
             <settings></settings>
         </div>
         <div class="popups fullsize">
-            <div class="modal-shadow fullsize" v-if="popups.length > 0"></div>
+            <div class="modal-shadow fullsize" v-if="hasPopups"></div>
         </div>
     </div>
 </template>
@@ -28,7 +28,9 @@
         },
 
         computed: {
-
+            hasPopups() {
+                return this.popups.length > 0;
+            }
         },
 
         methods: {

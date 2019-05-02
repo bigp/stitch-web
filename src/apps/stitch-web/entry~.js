@@ -3,7 +3,7 @@
  */
 import '~extensions';
 import '~bpa-js/helpers';
-import AUTO_OPEN from '~bpa-js/auto-open';
+import AUTO_OPEN from '~bpa-js/hot-reload';
 import VUE_SETUP from '~bpa-js/vue-setup';
 
 import App from './vue/app.vue';

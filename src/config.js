@@ -5,6 +5,8 @@
 const cookieSecret = 'stitch-web';
 
 module.exports = {
+	appName: 'stitch-web',
+	
 	autoOpen: {
 		enabled: false,
 		count: 3,
