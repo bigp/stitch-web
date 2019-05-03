@@ -1,12 +1,14 @@
 <template>
     <div>
         <top-bar></top-bar>
+
         <div class="main">
             <projects></projects>
             <invoices></invoices>
             <animations></animations>
             <settings></settings>
         </div>
+        
         <div class="popups fullsize">
             <div class="modal-shadow fullsize" v-if="hasPopups"></div>
         </div>
