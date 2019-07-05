@@ -47,6 +47,21 @@ $debug-alpha: 0.09;
 
 /////////////////////////////////////
 
+
+.btn {
+  //text-shadow: 0px 1px 0px #aaa, 0px -1px 0px #aaa, 0px 1px 1px #aaa;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--color-normal);
+
+  &:hover {
+    //text-shadow: 0px 1px 1px #222, 0px -1px 1px #222, 0px 1px 2px #222;
+    color: #eee;
+    background: var(--color-over);
+  }
+}
+
 .my-title {
   display: inline-block;
   vertical-align: middle;

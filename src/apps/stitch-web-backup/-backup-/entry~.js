@@ -1,6 +1,12 @@
 /**
  * Created by Chamberlain on 3/30/2018.
  */
+
+import '~extensions';
+
+trace( 'HEllo Wooooorld!' );
+
+ /*
 import '~extensions';
 import '~bpa-js/helpers';
 import AUTO_OPEN from '~bpa-js/hot-reload';
@@ -45,3 +51,4 @@ function highlightJavascriptBlocks() {
 		hljs.highlightBlock(block);
 	});
 }
+*/

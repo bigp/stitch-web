@@ -1,19 +1,22 @@
 <template>
     <my-view>
         <div class="padded">
-            <btn icon="folder-open" @mousedown="onOpenProject">Open Project ...</btn>
+            <btn icon="folder-open" @mousedown="openProject">Open Project ...</btn>
             <input v-show="isShowingPath"
                    type="text"
                    class="open-project"
                    placeholder="[paste path here]"
                    v-model="pathToOpen"
-                   @keydown.enter="onEnterPressed" />
+                   @keydown.enter="onEnter" />
+
         </div>
 
         <div class="padded">
             <h3>Recent Projects:</h3>
             <ul>
                 <li>1</li>
+                <li>2</li>
+                <li>3</li>
             </ul>
         </div>
 
@@ -35,15 +38,15 @@
 		},
 
 		methods: {
-			onOpenProject() {
+			openProject() {
 				this.isShowingPath = !this.isShowingPath;
             },
-        
+
 			onProjectFolderSelected(e) {
 				trace(e.target.files);
             },
 
-			onEnterPressed(e) {
+			onEnter(e) {
 				trace(this.pathToOpen);
 
 				$.ajax({
