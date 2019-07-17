@@ -2,6 +2,7 @@
     <my-view>
         <div class="padded">
             <btn icon="folder-open" @mousedown="onOpenProject">Open Project ...</btn>
+            
             <input v-show="isShowingPath"
                    type="text"
                    class="open-project"
@@ -10,13 +11,16 @@
                    @keydown.enter="onEnterPressed" />
         </div>
 
-        <div class="padded">
+        <!-- <div class="padded">
             <h3>Recent Projects:</h3>
             <ul>
                 <li>1</li>
             </ul>
-        </div>
+        </div> -->
 
+        <ul>
+            <tree-item :item="treeData"></tree-item>
+        </ul>
     </my-view>
 </template>
 
@@ -26,7 +30,14 @@
         data() {
 			return {
 				isShowingPath: false,
-				pathToOpen: '',
+                pathToOpen: '',
+                treeData: {
+                    name: 'test',
+                    children: [
+                        {name: 'hello'},
+                        {name: 'world'},
+                    ]
+                }
 			}
         },
 
@@ -56,6 +67,13 @@
                     	trace(err);
                     }
 				})
+            },
+
+            addItem(item) {
+                item.children.push({
+                    name: 'new item #' + (item.children.length + 1),
+                    children:[],
+                });
             }
 		},
 	}

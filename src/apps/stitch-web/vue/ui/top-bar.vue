@@ -14,7 +14,7 @@
 <script>
     
 	export default {
-		props: ['title'],
+		props: ['title', 'menus'],
 
         computed: {
 			
@@ -22,6 +22,10 @@
 
         methods: {
             gotoMenu(btn) {
+                const menus = this.menus;
+                if(_.isNumber(btn)) btn = menus && menus.length>0 ? menus[btn] : null;
+                if(!btn || !menus || !menus.length) return;
+
 				this.$router.push(btn.name.toLowerCase());
             }
         },
@@ -29,7 +33,7 @@
         created() {
 			const current = this.$router.history.current;
 			if(current.path=='/') {
-				this.gotoMenu(this.$app.menus[0]);
+				this.gotoMenu(0);
             }
         }
 	}

@@ -1,10 +1,10 @@
-import * as ui from './vue/ui/*';
-import * as views from './vue/views/*';
+// import * as ui from './vue/ui/*';
+// import * as views from './vue/views/*';
 
-export default {
-    components: _.extend( {}, ui, views ),
+// export default {
+//     components: _.extend( {}, ui, views ),
 
-    main() {
-        trace( "Hello world!!!" );
-    }
-};
+//     main() {
+//         trace( "Hello world!!!" );
+//     }
+// };

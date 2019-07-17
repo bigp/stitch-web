@@ -1,18 +1,24 @@
-//$$$.web.ioAddEvent
 
-trace('Index...');
-// $$$.web.setupRoutes({
-// 	'/api': {
-// 		'/open-project'(req, res, next) {
-// 			trace("Hello! Open-Project...");
-//
-// 			res.send('hello'); //{hello: 'world'}
-// 			//next();
-// 		}
-// 	},
-// });
+$$$.web.addRoutes( {
+	'/api': {
+		'use::/*'( req, res, next ) {
+			trace( "API USED!" );
+			trace( req.fullUrl() );
+			next();
+		},
 
+		'/'( req, res, next ) {
+			res.send( "PRIVATE REST API!" );
+		},
 
-$$$.web.app.use('/api/*', (req, res, next) => {
-	res.send("HI!");
+		'/open-project'( req, res, next ) {
+			trace( "Hello! Open-Project..." );
+
+			res.send( { hello: 'world' } );
+		},
+
+		'*'( req, res, next ) {
+			res.send( "API" );
+		},
+	},
 })

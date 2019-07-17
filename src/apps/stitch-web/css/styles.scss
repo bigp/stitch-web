@@ -5,7 +5,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  background: #888;
+  background: #cdc;
 }
 
 $top: 60px;
@@ -18,7 +18,7 @@ $debug-alpha: 0.09;
   right: 0px;
   width: auto;
   height: $top;
-  background: rgba(#f00, $debug-alpha);
+  background: rgba(#0f0, $debug-alpha);
 
   .inner {
     display: inline-block;
@@ -31,6 +31,76 @@ $debug-alpha: 0.09;
     font-weight: bold;
     letter-spacing: 1px;
     box-shadow: 0px 2px 16px rgba(#000,0.6);
+  }
+}
+
+.btn {
+    cursor: pointer;
+    display: inline-block;
+    border-radius: 4px;
+    padding: 6px 8px;
+    color: #fff;
+    box-shadow: 2px 2px 0px #00000044;
+    user-select: none;
+    
+    text-shadow: 1px 1px 1px #000, 1px -1px 1px #000, -1px 1px 1px #000, -1px -1px 1px #000;
+    background: var(--color-normal);
+    &:hover {
+        text-shadow: 0 0 2px #000, 0 0 4px #000;
+        background: var(--color-over);
+        transform: translate(-1px, -1px);
+    }
+
+    transition: .2s transform;
+    transition: .2s background-color;
+}
+
+.tree-item {
+  position: relative;
+
+  .item {
+    cursor: pointer;
+  } 
+
+  .container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .label {
+    display: inline-block;
+    min-height: 30px;
+    max-height: 30px;
+  }
+
+  .btn {
+    position: relative;
+    margin-bottom: -50px;
+  }
+
+  .bold {
+    font-weight: bold;
+  }
+
+  ul {
+    padding-left: 1em;
+    line-height: 1.5em;
+    list-style-type: dot;
+  }
+
+  .add {
+    cursor: pointer;
+  }
+
+  .fa {
+    display: inline-block;
+    vertical-align: -10%;
+    transition: 0.2s;
+    margin-right: 4px;
+
+    &.rotated {
+      transform: rotateZ(90deg);
+    }
   }
 }
 
