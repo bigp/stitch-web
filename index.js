@@ -1,4 +1,8 @@
 
+let driveLetters;
+const wdl = require( 'windows-drive-letters' );
+wdl.used().then( letters => driveLetters = letters );
+
 $$$.web.addRoutes( {
 	'/api': {
 		'use::/*'( req, res, next ) {
@@ -11,14 +15,20 @@ $$$.web.addRoutes( {
 			res.send( "PRIVATE REST API!" );
 		},
 
-		'/open-project'( req, res, next ) {
-			trace( "Hello! Open-Project..." );
+		'/projects': {
+			'/open-project'( req, res, next ) {
+				trace( "Hello! Open-Project..." );
 
-			res.send( { hello: 'world' } );
+				res.send( { hello: 'world' } );
+			},
+
+			'/drive-letters'( req, res, next ) {
+				res.send( { driveLetters: driveLetters } );
+			},
 		},
 
 		'*'( req, res, next ) {
-			res.send( "API" );
+			res.status( 404 ).send( "API ERROR" );
 		},
 	},
-})
+} );

@@ -1,0 +1,26 @@
+{
+  "name": "stitch-web",
+  "version": "1.0.0",
+  "description": "STITCH-WEB\r ==========",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "windows-drive-letters": "^4.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bigp/stitch-web.git"
+  },
+  "author": "Pierre Chamberlain",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bigp/stitch-web/issues"
+  },
+  "homepage": "https://github.com/bigp/stitch-web#readme"
+}

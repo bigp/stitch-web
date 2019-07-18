@@ -37,22 +37,25 @@ $debug-alpha: 0.09;
 .btn {
     cursor: pointer;
     display: inline-block;
+    user-select: none;
     border-radius: 4px;
     padding: 6px 8px;
     color: #fff;
     box-shadow: 2px 2px 0px #00000044;
-    user-select: none;
-    
-    text-shadow: 1px 1px 1px #000, 1px -1px 1px #000, -1px 1px 1px #000, -1px -1px 1px #000;
     background: var(--color-normal);
+    transition: .2s transform;
+    transition: .2s background-color;
+
     &:hover {
         text-shadow: 0 0 2px #000, 0 0 4px #000;
         background: var(--color-over);
         transform: translate(-1px, -1px);
     }
 
-    transition: .2s transform;
-    transition: .2s background-color;
+    text-shadow:  1px 1px 1px #000,
+                  1px -1px 1px #000,
+                  -1px 1px 1px #000,
+                  -1px -1px 1px #000;
 }
 
 .tree-item {
@@ -88,10 +91,6 @@ $debug-alpha: 0.09;
     list-style-type: dot;
   }
 
-  .add {
-    cursor: pointer;
-  }
-
   .fa {
     display: inline-block;
     vertical-align: -10%;
@@ -100,6 +99,15 @@ $debug-alpha: 0.09;
 
     &.rotated {
       transform: rotateZ(90deg);
+    }
+  }
+
+  .add-file {
+    transition: 0.2s;
+    
+    &:hover {
+      color: #222;
+      transform: rotate(360deg);
     }
   }
 }
@@ -130,4 +138,8 @@ $debug-alpha: 0.09;
   border-radius: 5px;
   margin-left: 10px;
   box-shadow: 0px 8px 16px rgba(#000, 0.5);
+}
+
+.drive-letter {
+  margin-right: 2px;
 }
