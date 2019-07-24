@@ -5,20 +5,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Default BPA Page</title>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> -->
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
+
     <link rel="stylesheet" href="/local/css/_merged.css">
     <link rel="stylesheet" href="/local/css/font-awesome/all.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="/dist/styles.css" hot-reload="1">
-    <script src="/local/js/_merged.js"></script>
+    
 
+    <script src="https://code.jquery.com/jquery-3.1.0.js" integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="
+        crossorigin="anonymous">
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/local/js/_merged.js"></script>
 </head>
 
-<body>
-    <div class="outer-app">
-        <div id="app">
-            Loading...
-        </div>
+<body style="background: #222;">
+    <div id="app">
+       <i style="color: #aaa; display: inline-block; padding: 20px;">
+            Vue-App is loading... (might have a JS Error too)
+        </i>
     </div>
 
     <script src="/dist/bundle.js"></script>

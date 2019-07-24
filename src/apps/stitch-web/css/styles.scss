@@ -1,145 +1,156 @@
 @import "shortcuts.scss";
+@import "bpa-components.scss";
+@import "file-browser.scss";
+
+body {
+  --clr-main: #aaa;
+  --clr-main-dark: #666;
+  --clr-main-lite: #fff;
+  --clr-prev: #aaa;
+  --clr-prev-dark: #666;
+  --clr-prev-lite: #fff;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transform: rotateZ(0deg);
+}
 
 .app {
-  position: absolute;
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: #cdc;
+  background: linear-gradient(180deg, var(--clr-main-lite), var(--clr-main) 60%, var(--clr-main-dark));
 }
 
-$top: 60px;
-$debug-alpha: 0.09;
+.curtain {
+  background: linear-gradient(180deg, var(--clr-prev-lite), var(--clr-prev) 60%, var(--clr-prev-dark));
+}
+
+.main-grid {
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 80px auto 50px;
+}
 
 .top-bar {
-  position: absolute;
-  display: inline-block;
-  left: 0px;
-  right: 0px;
-  width: auto;
-  height: $top;
-  background: rgba(#0f0, $debug-alpha);
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  grid-column: 1 / -1;
 
-  .inner {
-    display: inline-block;
-    padding: 12px;
+  align-items: center;
+  background:linear-gradient(180deg, unquote('#aaaa'), unquote('#fff8'));
+  
+  & > * {
+    white-space: nowrap;
+    padding: 0px 14px;
   }
 
   .btn {
-    margin-right: 5px;
-    padding: 10px;
+    text-align: center;
     font-weight: bold;
-    letter-spacing: 1px;
-    box-shadow: 0px 2px 16px rgba(#000,0.6);
-  }
-}
-
-.btn {
-    cursor: pointer;
-    display: inline-block;
-    user-select: none;
-    border-radius: 4px;
-    padding: 6px 8px;
-    color: #fff;
-    box-shadow: 2px 2px 0px #00000044;
-    background: var(--color-normal);
-    transition: .2s transform;
-    transition: .2s background-color;
-
-    &:hover {
-        text-shadow: 0 0 2px #000, 0 0 4px #000;
-        background: var(--color-over);
-        transform: translate(-1px, -1px);
-    }
-
-    text-shadow:  1px 1px 1px #000,
-                  1px -1px 1px #000,
-                  -1px 1px 1px #000,
-                  -1px -1px 1px #000;
-}
-
-.tree-item {
-  position: relative;
-
-  .item {
-    cursor: pointer;
-  } 
-
-  .container {
-    position: relative;
-    display: inline-block;
-  }
-
-  .label {
-    display: inline-block;
-    min-height: 30px;
-    max-height: 30px;
-  }
-
-  .btn {
-    position: relative;
-    margin-bottom: -50px;
-  }
-
-  .bold {
-    font-weight: bold;
-  }
-
-  ul {
-    padding-left: 1em;
-    line-height: 1.5em;
-    list-style-type: dot;
-  }
-
-  .fa {
-    display: inline-block;
-    vertical-align: -10%;
-    transition: 0.2s;
     margin-right: 4px;
-
-    &.rotated {
-      transform: rotateZ(90deg);
-    }
-  }
-
-  .add-file {
-    transition: 0.2s;
-    
-    &:hover {
-      color: #222;
-      transform: rotate(360deg);
-    }
+    padding: 6px;
+    letter-spacing: 0.5px;
   }
 }
 
 .main {
-  position: absolute;
-  display: block;
-  left:0px;
-  right:0px;
-  top: $top;
-  bottom: 0px;
+  grid-column: 1 / -1;
+  width:100%;
+  height:100%;
+}
+
+.footer {
+  color: #fff;
+  grid-column: 1 / -1;
   padding: 15px;
-  background: rgba(#00f, $debug-alpha);
+  background: linear-gradient(180deg, unquote('#fff8'), unquote('#aaaa'));
+}
+
+.extra-buttons {
+  justify-self: end;
+  //border: solid 1px #000;
+}
+
+.my-view {
+  display: grid;
 }
 
 /////////////////////////////////////
 
+.projects {
+  padding: 5px;
+  //background: #faa;
+  grid-template-columns: repeat(3, 1fr);
+  
+  .btn {
+    margin-bottom: 5px;
+  }
+
+  .field, .b-form-select, .label {
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .b-form-select {
+    width: auto;
+  }
+
+  .field {
+    margin-bottom: 5px;
+  }
+
+  .label {
+    text-align: right;
+    width: 90px;
+    font-weight: bold;
+  }
+
+  .ad-preview {
+    grid-column: 1 / -1;
+    justify-self: center;
+    overflow: hidden;
+    iframe {
+      overflow: hidden;
+    }
+  }
+
+  .timeline-slider {
+    display: grid;
+    padding: 0px 5px;
+    grid-template-columns: 40px 5fr;
+    align-items: center;
+    // .btn, .b-progress {
+    //   //display: inline-block;
+    // }
+
+    .b-progress {
+      box-shadow: 1px 1px 2px #0008;
+    }
+
+    .progress-bar { transition: width 0s; } 
+  }
+
+  .dropdown-ad {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+}
 .my-title {
-  display: inline-block;
-  vertical-align: middle;
-  padding: 0px 10px;
-  line-height: 100%;
+  color: #fff;
+  
+  .icon {
+    display: inline-block;
+  }
 }
 
-.open-project {
-  padding: 10px;
-  width: 300px;
-  border-radius: 5px;
-  margin-left: 10px;
-  box-shadow: 0px 8px 16px rgba(#000, 0.5);
-}
+.popup {
+  padding:10px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #aaa 50%, #bbb);
+  box-shadow: 0px 8px 16px #00000066;
 
-.drive-letter {
-  margin-right: 2px;
+  .heading {
+    font-size: 140%;
+    line-height: 30px;
+  }
 }

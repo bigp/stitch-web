@@ -2,7 +2,7 @@
     <nobr>
         <i class="inner">
         <my-title>Stitch-Web</my-title>
-        <btn v-for="(btn, k) in menuButtons"
+        <btn v-for="(btn, k) in menuButtons" :key="k"
              @mousedown="onMenuClick(btn)"
              :color="btn.color"
              :icon="btn.icon">{{btn.name}}</btn>

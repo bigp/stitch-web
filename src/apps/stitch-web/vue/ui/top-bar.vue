@@ -1,20 +1,24 @@
 <template>
-    <nobr>
-        <i class="inner">
-            <h1 class="my-title">{{title}}</h1>
-            <btn v-for="(menu, k) in $app.menus"
+    <div>
+        <h1 class="my-title">
+            <icon v-if="icon" :name="icon"></icon>
+            {{title}}
+        </h1>
+        <div class="menu-buttons">
+            <btn v-for="(menu, k) in menus"
                 @mousedown="gotoMenu(menu)"
                 :key="k"
                 :color="menu.color"
                 :icon="menu.icon">{{menu.name}}</btn>
-        </i>
-    </nobr>
+        </div>
+        <slot></slot>
+    </div>
 </template>
 
 <script>
     
 	export default {
-		props: ['title', 'menus'],
+		props: ['title', 'menus', 'icon'],
 
         computed: {
 			
