@@ -70,6 +70,11 @@
     &:hover {
         text-shadow: 0 0 2px #000, 0 0 4px #000;
         background: var(--color-over);
+        color: #fff;
+    }
+
+    &.close {
+      opacity: 1;
     }
 
     text-shadow:  1px 1px 1px #000,

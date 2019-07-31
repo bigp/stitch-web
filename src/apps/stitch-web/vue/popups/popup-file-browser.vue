@@ -6,7 +6,7 @@
                 :headerCondition="isPathDeepEnough"
                 :itemSelector="(value) => treeData.data == value"
                 :itemRenderer="(value) => shortPath(value)"
-                :items="json.favoritePaths">
+                :items="projectData.favoritePaths">
 
                 <btn @click="onAddFavorite()"
                     icon="plus"
@@ -67,19 +67,12 @@ export default {
 
     data() {
         return {
-            isShowingPath: false,
-            pathToOpen: '',
-            driveLetters: [],
-            json: {},
-            treeData: {}
+            
         }
     },
     
     computed: {
-        source() {
-            trace(this.$el);
-            return null;
-        },
+        ...Vuex.mapGetters('projectData driveLetters treeData'),
 
         isPathDeepEnough() {
             const treeData = this.treeData;
@@ -94,9 +87,9 @@ export default {
         },
 
         isCurrentFavorite() {
-            if(!this.json || !this.json.favoritePaths) return false;
+            if(!this.projectData || !this.projectData.favoritePaths) return false;
             
-            return this.json.favoritePaths.has(this.treeData.data);
+            return this.projectData.favoritePaths.has(this.treeData.data);
         },
 
         isAllChecked() {
@@ -109,6 +102,8 @@ export default {
     },
 
     methods: {
+        ...Vuex.mapActions("sendBrowsePath addFavorite removeFavorite"),
+
         onSelectedDriveLetter(letter) {
             const treeData = this.treeData || {};
             if(treeData.data && treeData.data.startsWith(letter)) return;
@@ -124,31 +119,6 @@ export default {
             this.sendBrowsePath({path: path});
         },
 
-        sendBrowsePath(obj) {
-            $$$.api('api/projects/browse-path', obj)
-                .then( data => this.onBrowsePathReceived(data) )
-                .catch( err => this.onError(err, obj) ); //item
-        },
-
-        onBrowsePathReceived( data ) {
-            data.fullpath = data.fullpath.mustEndWith('/');
-
-            this.treeData = {
-                name: data.fullpath, //this.shortPath(),
-                data: data.fullpath,
-                isOpen: true,
-                isChecked: false,
-                children: data.list.map(p => ({
-                    name: p.replace(data.fullpath, ''),
-                    data: p,
-                    isChecked: false,
-                    isError: false,
-                }))
-            };
-
-            trace(data);
-        },
-
         onError(err, item) {
             if(err && err.responseText) {
                 trace(err.responseText);
@@ -162,20 +132,13 @@ export default {
         onAddFavorite() {
             const item = this.treeData;
 
-            $$$.api('api/projects/add-favorite-path', {path: item.data})
-                .then( data => this.json = data.json )
-                .catch( err => this.onError(err, item) );
+            this.addFavorite( item.path ).catch( err => this.onError(err, item) );
         },
 
         onRemoveFavorite() {
             const item = this.treeData;
 
-            $$$.api('api/projects/remove-favorite-path', {path: item.data})
-                .then( data => {
-                    this.json = data.json;
-                    this.$app.$forceUpdate();
-                    } )
-                .catch( err => this.onError(err, item) );
+            this.removeFavorite( item.path ).catch( err => this.onError(err, item) );
         },
 
         onConfirm() {
@@ -206,7 +169,7 @@ export default {
     },
     
     mounted() {
-        const favs = this.json.favoritePaths;
+        const favs = this.projectData.favoritePaths;
 
         if(!favs || !favs.length) return this.onPathClicked(this.driveLetters[0] + ':');
 

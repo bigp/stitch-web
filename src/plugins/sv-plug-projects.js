@@ -160,21 +160,19 @@ module.exports = class PluginProjects {
 
             const client = _.getOrCreate( catalog, clientName, { campaigns: {} } );
             const campaign = _.getOrCreate( client.campaigns, campaignName, { projects: [] } );
-            const projects = campaign.projects.push( {
+
+            //const projects = 
+            // Populate the campaign's list of projects:
+            campaign.projects.push( {
                 name: projectName,
                 path: p.path,
                 status: PROJECT_STATUS._01_IMPORTED,
             } );
         };
 
-        return new Promise( ( _then, _catch ) => {
-            pathExplorer( dir )
-                .then( list => list.map( toMatchingProject ).filter( f => f.match ) )
-                .then( filtered => {
-                    filtered.forEach( toCatalogEntry );
-                    _then();
-                } );
-        })
+        return pathExplorer( dir )
+            .then( list => list.map( toMatchingProject ).filter( f => f.match ) )
+            .then( filtered => filtered.forEach( toCatalogEntry ) );
     }
 
     configure() {

@@ -3,21 +3,25 @@
         <div class="curtain grid noclick fullsize top-left abs"></div>
         
         <div class="main-grid">
+            <!------------ TOP-BAR ---------------->
             <top-bar icon="star-of-life" title="Stitch-Web" :menus="menus">
                 <portal-target name="extra-buttons"
                     class="extra-buttons grid-last-col">
                 </portal-target>
             </top-bar>
 
+            <!------------ MAIN PANEL ---------------->
             <div class="main">
-                <component :is="currentViewName"></component>
+                <component ref="$currentView" :is="currentViewName"></component>
             </div>
 
+            <!------------ FOOTER ---------------->
             <div class="footer text-shadow">
-                <center>&copy; PierreChamberlain.ca Stitch-Web 2019</center>
+                <center><icon name="sync-alt" class="inline-block" :class="{rotating: isLoading}"></icon> &copy; PierreChamberlain.ca Stitch-Web 2019</center>
             </div>
         </div>
 
+        <!------------ FULLSIZE CONTAINER (for popups, modals, etc.) ---------------->
         <div class="fullsize abs top-left" v-if="hasPopups">
             <div class="popups modal-shadow top-left fullsize"></div>
             <component v-for="(popup, i) in popups" :key="i" :is="popup.name" class="popup">
@@ -30,30 +34,33 @@
     import * as ui from './ui/*';
     import * as views from './views/*';
     import * as popups from './popups/*';
+    import store from './store.js';
 
     const menus = [
 		{name:'Projects', icon:'flag', color: '#2a3'},
         {name:'Invoices', icon:'file', color: '#06f'},
-        {name:'Animations', icon:'image', color: '#42d'},
+        {name:'Animate', icon:'image', color: '#42d'},
 		{name:'Settings', icon:'cog', color: '#f00'},
 	];
 
 	export default {
         components: _.extend( {}, ui, views, popups ),
+        store,
 
 		data() {
 			return {
-                popups: [],
                 menus: menus,
                 prevRoute: '',
-                projectsData: {},
+                popups: [],
+                
+                // projectsData: {},
 
-                current: {
-                    client: null,
-                    campaign: null,
-                    project: null,
-                    ad: null,
-                }
+                // current: {
+                //     client: null,
+                //     campaign: null,
+                //     project: null,
+                //     ad: null,
+                // }
 			}
         },
 
@@ -69,11 +76,12 @@
                 tl.fromTo('.main', 0.4, {alpha:0}, {alpha:1}, 0);
                 tl.fromTo('.extra-buttons', 0.3, {alpha:0, y:-10}, {alpha:1, y:0}, 0);
                 tl.fromTo('.fa-star-of-life', 0.4, {rotation:-180}, {rotation:0, ease:Sine.easeOut}, 0);
-                //_.defer(() => this.$forceUpdate());
             }
         },
 
         computed: {
+            ... Vuex.mapState('isLoading cookieCurrentSelection'),
+
             currentViewName() {
                 return _.trim(this.$route.path, '/');
             },
@@ -107,14 +115,43 @@
 
         methods: {
             main() {
-                trace("App.vue: methods.main() !!!");
+                //Make sure the background gradient "curtains" is hidden:
                 TweenMax.set('.curtain', {alpha:0});
+
+                const _this = this;
+                
+                trace(this.$store);
+                
+                //First thing when the app launches, get the project listing:
+
+                this.fetchProjects()
+                    .then( res => trace('app.vue@main()', res));
+
+                // _this.fetchProjects()
+                //     .then( () => {
+                //         //If we have a breadcrumb trail of the last current selection, use it!
+                //         const current = Cookies.getJSON('currentSelection');
+                        
+                //         // Nothing found? 
+                //         if(!current || !current.client) return;
+                            
+                //         //Update current selection (from the Cookies):
+                //         _this.current = current;
+
+                //         $$$.emit('@projects-list-cookie', current);
+                //     });
             },
 
-            currentColor(brightness) {
-                const menu = menus.filter(f => f.name);
-                trace(menu);
-            },
+            // fetchProjects() {
+            //     return $$$.api('api/projects/list')
+            //         .then( data => {
+            //             this.projectData = data;
+            //             trace('app.vue');
+            //             $$$.emit('@projects-list-loaded', data);
+            //         } );
+            // },
+
+            ...Vuex.mapActions('fetchProjects'),
 
             addPopup(popup, cb) {
                 if(cb) popup.cb = cb;

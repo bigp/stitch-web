@@ -109,15 +109,17 @@ body {
     grid-column: 1 / -1;
     justify-self: center;
     overflow: hidden;
+
     iframe {
       overflow: hidden;
+      background: #222;
     }
   }
 
   .timeline-slider {
     display: grid;
     padding: 0px 5px;
-    grid-template-columns: 40px 5fr;
+    grid-template-columns: 40px 40px 5fr;
     align-items: center;
     // .btn, .b-progress {
     //   //display: inline-block;
@@ -153,4 +155,19 @@ body {
     font-size: 140%;
     line-height: 30px;
   }
+
+  .close {
+    padding: 4px 8px;
+  }
+}
+
+.rotating .fa {
+  animation-duration: 2s;
+  animation-name: anim-rotating;
+  animation-iteration-count: infinite;
+}
+
+@keyframes anim-rotating {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(180deg); }
 }

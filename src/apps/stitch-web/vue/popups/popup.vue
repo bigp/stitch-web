@@ -3,7 +3,7 @@
         <i class="block rel">
             <i class="inline-block abs bold top-left center fullsize heading noclick">- {{title}} -</i>
             <i class="inline-block fullsize right">
-                <btn icon="close" @click="$app.dismissPopup()"></btn>
+                <btn icon="close" color="#d00" @click="$app.dismissPopup()"></btn>
             </i>
         </i>
         <slot></slot>
@@ -36,11 +36,11 @@
             popupObj.$vue = this.childComponent;
             this.childComponent.$popup = popupObj;
 
-            if(popupObj.data) {
-                _.forOwn(popupObj.data, (value, key) => {
-                    this.childComponent[key] = value;
-                })
-            }
+            // if(popupObj.data) {
+            //     _.forOwn(popupObj.data, (value, key) => {
+            //         this.childComponent[key] = value;
+            //     })
+            // }
         }
     }
 
