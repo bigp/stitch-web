@@ -10,7 +10,10 @@
                 :key="k"
                 :color="menu.color"
                 :icon="menu.icon">{{menu.name}}</btn>
+            <portal-target name="left-buttons" class="left-buttons"> </portal-target>
         </div>
+        
+        <portal-target name="right-buttons" class="right-buttons grid-last-col"> </portal-target>
         <slot></slot>
     </div>
 </template>

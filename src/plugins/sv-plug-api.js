@@ -9,6 +9,11 @@ module.exports = class PluginAPI {
                 res.send( "PRIVATE REST API!" );
             },
 
+            '/clear-cli'( req, res, next ) {
+                setTimeout( traceClear, 100 );
+                res.send( { ok: 'cleared CLI.' } );
+            }
+
         };
     }
 

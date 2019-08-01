@@ -52,11 +52,11 @@
             @item-click="onPathClicked">
         </tree-item>
 
-        <div class="button-bar">
+        <template #button-bar>
             <btn @click="onConfirm()"
                 icon="check"
                 color="#080">Confirm</btn>
-        </div>
+        </template>
     </popup>
         
 </template>
@@ -174,10 +174,6 @@ export default {
         if(!favs || !favs.length) return this.onPathClicked(this.driveLetters[0] + ':');
 
         this.onPathClicked(favs[0]);
-    },
-
-    updated() {
-        $$$.app.centerPopups();
     }
 }
 </script>

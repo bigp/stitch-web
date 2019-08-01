@@ -1,50 +1,30 @@
 <template>
     <my-view>
-        <portal to="extra-buttons">
+        <portal to="left-buttons">
+            <btn icon="arrow-right current-project" color="#fff" @click="showProjectBrowser()">{{currentProject.name}}</btn>
+        </portal>
+        <portal to="right-buttons">
             <btn icon="flask" @click="showFileBrowser()">Import Projects</btn>
         </portal>
 
-        <field label="Client:" class="dropdown-client">
-            <b-form-select 
-                v-model="currentSelection.client">
-                <option :value="null">Select a client...</option>
-                <option v-for="( client, k ) in catalog"
-                    :key="k"
-                    :value="k">{{k}}</option>
-            </b-form-select>
-        </field>
-        
-        <field label="Campaign:" class="dropdown-campaign">
-            <b-form-select 
-                v-model="currentSelection.campaign">
-                <option :value="null">Select a campaign...</option>
-                <option v-for="( campaign, c ) in currentCampaigns"
-                    :key="c"
-                    :value="campaign">{{campaign}}</option>
-            </b-form-select>
-        </field>
+        <!--<field label="Client:" class="dropdown-client">
+            
+             <b-dropdown :text="currentAd && currentAd.name ? currentAd.name : 'Select an Ad Brand &amp; Campaign'" v-if="catalog!=null"
+                boundary="scrollParent"
+                v-model="currentAd" class="m-2">
+                <div v-for="(client, i) in catalog" :key="i">
+                    <b-dropdown-header class="client-header"> {{i.replace(/_/g, ' ')}} </b-dropdown-header>
+                    <b-dropdown-group v-for="(campaign, j) in client.campaigns" :key="j">
+                        <b-dropdown-header class="campaign-header">{{j}}</b-dropdown-header>
 
-        <field label="Project:" class="dropdown-project">
-            <b-form-select
-                @change="onProjectSelected"
-                v-model="currentSelection.project">
-                <option :value="null">Select a project...</option>
-                <option v-for="( project, p ) in currentProjects"
-                    :key="p"
-                    :value="project.name">{{project.name}}</option>
-            </b-form-select>
-        </field>
-
-        <field label="Ad:" class="dropdown-ad">
-            <b-form-select
-                @change="onAdSelected"
-                v-model="currentSelection.ad">
-                <option :value="null">Select an ad...</option>
-                <option v-for="( ad, p ) in ads"
-                    :key="p"
-                    :value="ad">{{ad.name}}</option>
-            </b-form-select>
-        </field>
+                        <b-dropdown-item-button v-for="(project, p) in campaign.projects" :key="p"
+                            class="project-header" @click="onProjectSelected(project.name)"
+                            aria-describedby="dropdown-header-label">{{project.name}}
+                        </b-dropdown-item-button>
+                    </b-dropdown-group>
+                </div>
+            </b-dropdown> 
+        </field>-->
 
         <div class="ad-preview">
             <div class="timeline-slider" v-if="currentAd.timeline">
@@ -72,7 +52,7 @@
 
 <script>
 
-    const dummyTimeline = {
+    const DUMMY_TIMELINE = {
         paused() { return true; },
         progress() { return 0; }
     };
@@ -82,12 +62,16 @@
         
         data() {
 			return {
+                currentProject: {
+                    name: "Select a project..."
+                },
+
                 currentAd: {
                     progress: 0,
                     html: null,
                     size: null,
                     timeline: null,
-                }
+                },
 			}
         },
 
@@ -127,8 +111,19 @@
 
             resetCurrentAd() {
                 const currentAd = this.currentAd;
-                currentAd.timeline = dummyTimeline;
+                currentAd.timeline = DUMMY_TIMELINE;
                 currentAd.html = '';
+            },
+
+            showProjectBrowser() {
+                this.$app.addPopup({name: 'popup-project-selector', data: {
+                    //driveLetters: this.driveLetters,
+                    json: this.json,
+                }}, selectedProject => {
+                    if(!selectedProject) return;
+
+                    this.onConfirmSelectedProject(selectedProject);
+                });
             },
 
 			showFileBrowser() {
@@ -220,6 +215,9 @@
             
             //Sync the progress-bar with the current Ad timeline (if it exists):
             this.$loopWhileMounted(() => ad.progress = ad.timeline ? ad.timeline.progress() : 0);
+
+            this.showProjectBrowser();
+            //this.showFileBrowser();
 
             //Upon first loading:
             // if(!this.$app.projectData) {

@@ -4,11 +4,7 @@
         
         <div class="main-grid">
             <!------------ TOP-BAR ---------------->
-            <top-bar icon="star-of-life" title="Stitch-Web" :menus="menus">
-                <portal-target name="extra-buttons"
-                    class="extra-buttons grid-last-col">
-                </portal-target>
-            </top-bar>
+            <top-bar icon="star-of-life" title="Stitch-Web" :menus="menus"></top-bar>
 
             <!------------ MAIN PANEL ---------------->
             <div class="main">
@@ -34,17 +30,11 @@
     import * as ui from './ui/*';
     import * as views from './views/*';
     import * as popups from './popups/*';
-    import store from './store.js';
-
-    const menus = [
-		{name:'Projects', icon:'flag', color: '#2a3'},
-        {name:'Invoices', icon:'file', color: '#06f'},
-        {name:'Animate', icon:'image', color: '#42d'},
-		{name:'Settings', icon:'cog', color: '#f00'},
-	];
+    import store, {menus} from './store.js';
 
 	export default {
         components: _.extend( {}, ui, views, popups ),
+        
         store,
 
 		data() {
@@ -52,15 +42,6 @@
                 menus: menus,
                 prevRoute: '',
                 popups: [],
-                
-                // projectsData: {},
-
-                // current: {
-                //     client: null,
-                //     campaign: null,
-                //     project: null,
-                //     ad: null,
-                // }
 			}
         },
 
@@ -74,7 +55,7 @@
                 const tl = new TimelineMax();
                 tl.fromTo('.curtain', 0.4, {alpha:1}, {alpha:0}, 0);
                 tl.fromTo('.main', 0.4, {alpha:0}, {alpha:1}, 0);
-                tl.fromTo('.extra-buttons', 0.3, {alpha:0, y:-10}, {alpha:1, y:0}, 0);
+                tl.fromTo('.right-buttons', 0.3, {alpha:0, y:-10}, {alpha:1, y:0}, 0);
                 tl.fromTo('.fa-star-of-life', 0.4, {rotation:-180}, {rotation:0, ease:Sine.easeOut}, 0);
             }
         },
@@ -114,18 +95,24 @@
         },
 
         methods: {
+            ...Vuex.mapActions('fetchProjects'),
+
             main() {
                 //Make sure the background gradient "curtains" is hidden:
                 TweenMax.set('.curtain', {alpha:0});
 
                 const _this = this;
                 
-                trace(this.$store);
-                
                 //First thing when the app launches, get the project listing:
-
                 this.fetchProjects()
                     .then( res => trace('app.vue@main()', res));
+
+                // DEBUG: Make the header-click clear the browser & the CLI's console.
+                $('.top-bar .my-title').click(() => {
+                    $$$.api('/clear-cli');
+                    traceClear();
+                })
+            },
 
                 // _this.fetchProjects()
                 //     .then( () => {
@@ -140,7 +127,6 @@
 
                 //         $$$.emit('@projects-list-cookie', current);
                 //     });
-            },
 
             // fetchProjects() {
             //     return $$$.api('api/projects/list')
@@ -150,8 +136,6 @@
             //             $$$.emit('@projects-list-loaded', data);
             //         } );
             // },
-
-            ...Vuex.mapActions('fetchProjects'),
 
             addPopup(popup, cb) {
                 if(cb) popup.cb = cb;

@@ -51,6 +51,28 @@ body {
     padding: 6px;
     letter-spacing: 0.5px;
   }
+
+  .my-title {
+    line-height: 100%;
+    cursor: pointer;
+  }
+
+  .menu-buttons {
+    white-space: nowrap;
+    color: #f00 !important;
+  }
+}
+
+.left-buttons {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  //justify-self: start;
+}
+
+.right-buttons {
+  justify-self: end;
+  //border: solid 1px #000;
 }
 
 .main {
@@ -64,11 +86,6 @@ body {
   grid-column: 1 / -1;
   padding: 15px;
   background: linear-gradient(180deg, unquote('#fff8'), unquote('#aaaa'));
-}
-
-.extra-buttons {
-  justify-self: end;
-  //border: solid 1px #000;
 }
 
 .my-view {
@@ -132,11 +149,34 @@ body {
     .progress-bar { transition: width 0s; } 
   }
 
+  .client-header {
+    color: #fff;
+    font-weight: bold;
+    padding-left: 10px;
+    font-size: 80%;
+    text-shadow: 0 0 3px unquote('#0004');
+    background: linear-gradient(45deg, unquote('#aaf8') 50%, unquote('#aaf0'));
+  }
+
+  .campaign-header {
+    color: #669;
+    font-weight: bold;
+    padding-left: 15px;
+    font-size: 80%;
+    background: linear-gradient(170deg, unquote('#faa0') 20%, unquote('#faa4') 70%)
+  }
+
+  .project-header button {
+    letter-spacing: -0.5px;
+    font-size: 80%;
+  }
+
   .dropdown-ad {
     grid-column: 1 / -1;
     justify-self: center;
   }
 }
+
 .my-title {
   color: #fff;
   
@@ -146,18 +186,38 @@ body {
 }
 
 .popup {
-  padding:10px;
+  //min-width: 250px;
+  display: grid;
+  grid-template-rows: 50px auto 40px;
+  padding:5px;
   border-radius: 10px;
   background: linear-gradient(180deg, #aaa 50%, #bbb);
   box-shadow: 0px 8px 16px #00000066;
 
+  .header-container {
+    width: 100%;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 50px;
+    align-content: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #fff4, #2222);
+    border-radius: 10px;
+    padding: 0px 5px;
+  }
+
   .heading {
+    text-shadow: 1px 1px 1px #fff9;
+    text-align: center;
     font-size: 140%;
-    line-height: 30px;
+    font-weight: bold;
+    padding: 1px 15px;
+    
   }
 
   .close {
-    padding: 4px 8px;
+    justify-self: end;
+    padding: 4px 10px;
   }
 }
 
@@ -167,7 +227,17 @@ body {
   animation-iteration-count: infinite;
 }
 
+.current-project {
+  text-shadow: none;
+  color: #000;
+}
+
 @keyframes anim-rotating {
   from { transform: rotate(0deg); }
   to { transform: rotate(180deg); }
+}
+
+.popup-project-selector {
+  min-width: 400px;
+  min-height: 400px;
 }

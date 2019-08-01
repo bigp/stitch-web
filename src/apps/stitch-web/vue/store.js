@@ -9,7 +9,14 @@ const state = {
     currentSelection: {},
 }
 
-const store = {
+export const menus = [
+    { name: 'Projects', icon: 'flag', color: '#2a3' },
+    { name: 'Invoices', icon: 'file', color: '#06f' },
+    { name: 'Animate', icon: 'image', color: '#42d' },
+    { name: 'Settings', icon: 'cog', color: '#f00' },
+];
+
+const storeDefinition = {
     state,
 
     mutations: {
@@ -19,7 +26,7 @@ const store = {
             value: ( state, val ) => state[key] = val
         } ) ),
         CURRENT_SELECTION: ( s, val ) => {
-            trace( "[MUTATION] Current Selection", val, new Error());
+            //trace( "[MUTATION] Current Selection", val, new Error());
             Cookies.set( 'currentSelection', val );
 
             s.currentSelection = val;
@@ -48,6 +55,12 @@ const store = {
                 .then( data => {
                     commit( 'PROJECT_DATA', dataResult = data );
                     dispatch( 'cookieCurrentSelection' );
+                    
+
+                    //TODO: Restructure the data as GROUPS -> Campaigns, etc.
+                    // ???????????? Is that necessary ????????????
+
+                    /////trace( data.json.catalog );
 
                     return $$$.wait( 1000 );
                 } )
@@ -60,7 +73,6 @@ const store = {
         },
 
         sendBrowsePath( { commit, dispatch }, obj ) {
-            trace( obj );
             return $$$.api( 'api/projects/browse-path', obj )
                 .then( data => dispatch( 'onBrowsePathReceived', data ) );
         },
@@ -116,7 +128,7 @@ const store = {
         cookieCurrentSelection( { commit, dispatch }, cookie ) {
             cookie = cookie || getCookie( 'currentSelection' );
             
-            trace( "store@cookieCurrentSelection() ... COOKIE", new Error() );
+            //trace( "store@cookieCurrentSelection() ...", new Error() );
             commit( 'CURRENT_SELECTION', cookie );
         }
     }
@@ -140,4 +152,4 @@ function getCookie( key, def ) {
 
 //////////////////////////////////////////
 
-export default new Vuex.Store( store );
+export default new Vuex.Store( storeDefinition );
