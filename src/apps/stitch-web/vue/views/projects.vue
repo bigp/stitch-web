@@ -76,7 +76,7 @@
         },
 
 		computed: {
-            ...Vuex.mapGetters('catalog ads currentSelection'),
+            ...Vuex.mapGetters('*'),
 
             currentCampaigns() {
                 if(!this.catalog || !this.currentSelection.client) return [];
@@ -107,7 +107,7 @@
 		},
 
 		methods: {
-            ...Vuex.mapActions("fetchAdsByProject cookieCurrentSelection"),
+            ...Vuex.mapActions("*"),
 
             resetCurrentAd() {
                 const currentAd = this.currentAd;
@@ -116,10 +116,13 @@
             },
 
             showProjectBrowser() {
-                this.$app.addPopup({name: 'popup-project-selector', data: {
+                /*
+                data: {
                     //driveLetters: this.driveLetters,
                     json: this.json,
-                }}, selectedProject => {
+                }
+                */
+                this.$app.popupMan.add({name: 'popup-project-selector'}, selectedProject => {
                     if(!selectedProject) return;
 
                     this.onConfirmSelectedProject(selectedProject);
@@ -127,10 +130,14 @@
             },
 
 			showFileBrowser() {
-                this.$app.addPopup({name: 'popup-file-browser', data: {
+                /*
+                , data: {
                     driveLetters: this.driveLetters,
                     json: this.json,
-                }}, answer => {
+                }
+                */
+               trace("showFileBrowser >>> ");
+                this.$app.popupMan.add({name: 'popup-file-browser'}, answer => {
                     if(!answer) return;
 
                     this.onConfirmPathsToImport(answer);

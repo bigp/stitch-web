@@ -24,10 +24,16 @@
 
 <body style="background: #222;">
     <div id="app">
-       <i style="color: #aaa; display: inline-block; padding: 20px;">
-            Vue-App is loading... (might have a JS Error too)
-        </i>
+        
     </div>
+
+    <div class="fullview abs top-left grid-center-center preloader-container">
+        <i class="fa fa-spinner preloader" style="color: #fff; transform: scale(4)"></i>
+    </div>
+
+    <script>
+        const preloader = TweenMax.to('.preloader', 0.8, {rotation:360, repeat: -1, ease: SteppedEase.config( 8 )});
+    </script>
 
     <script src="/dist/bundle.js"></script>
 

@@ -1,4 +1,4 @@
-import { constant } from 'change-case';
+//import { constant } from 'change-case';
 
 const state = {
     isFirstLoad: true,
@@ -9,23 +9,16 @@ const state = {
     currentSelection: {},
 }
 
-export const menus = [
-    { name: 'Projects', icon: 'flag', color: '#2a3' },
-    { name: 'Invoices', icon: 'file', color: '#06f' },
-    { name: 'Animate', icon: 'image', color: '#42d' },
-    { name: 'Settings', icon: 'cog', color: '#f00' },
-];
-
-const storeDefinition = {
+const store = {
     state,
 
     mutations: {
-        //...
         ... _.remap( state, key => ( {
-            key: constant( key ),
+            key: key,
             value: ( state, val ) => state[key] = val
         } ) ),
-        CURRENT_SELECTION: ( s, val ) => {
+        
+        currentSelection: ( s, val ) => {
             //trace( "[MUTATION] Current Selection", val, new Error());
             Cookies.set( 'currentSelection', val );
 
@@ -39,49 +32,60 @@ const storeDefinition = {
         ..._.remap( state, key => ( {
             key: key,
             value: s => s[key]
-        })),
-        driveLetters: s => s.projectData.driveLetters,
+        } ) ),
+
+        driveLetters: s => s.projectData.driveLetters || [],
         json: s => s.projectData.json,
-        catalog: s => _.get( s, 'projectData.json.catalog'),
+        favoritePaths: s => _.get( s.projectData, 'json.favoritePaths' ),
+        catalog: s => _.get( s.projectData, 'json.catalog'),
     },
 
     actions: {
         fetchProjects( { commit, dispatch } ) {
-            commit( 'IS_LOADING', true );
+            commit( 'isLoading', true );
 
             var dataResult;
 
+            trace.INFO( "store.js - Fetch project list..." );
+
             return $$$.api( 'api/projects/list' )
                 .then( data => {
-                    commit( 'PROJECT_DATA', dataResult = data );
+                    commit( 'projectData', dataResult = data );
                     dispatch( 'cookieCurrentSelection' );
                     
+                    trace.OK( "store.js - Fetched list OK." );
+                    trace( data );
 
                     //TODO: Restructure the data as GROUPS -> Campaigns, etc.
                     // ???????????? Is that necessary ????????????
 
                     /////trace( data.json.catalog );
 
-                    return $$$.wait( 1000 );
-                } )
-                .then( () => {
-                    commit( 'IS_FIRST_LOAD', false );
-                    commit( 'IS_LOADING', false );
+                //     return $$$.wait( 1000 );
+                // } )
+                // .then( () => {
+                    commit( 'isFirstLoad', false );
+                    commit( 'isLoading', false );
 
                     return dataResult;
                 } );
         },
 
         sendBrowsePath( { commit, dispatch }, obj ) {
+            const stack = new Error();
+
             return $$$.api( 'api/projects/browse-path', obj )
-                .then( data => dispatch( 'onBrowsePathReceived', data ) );
+                .then( data => dispatch( 'onBrowsePathReceived', data ) )
+                .catch( err => trace.FAIL( "browse-path failed", stack ) );
         },
 
         onBrowsePathReceived( { commit, dispatch }, data ) {
+            trace( data );
+
             data.fullpath = data.fullpath.mustEndWith( '/' );
 
             //this.treeData = ;
-            commit( 'TREE_DATA', {
+            commit( 'treeData', {
                 name: data.fullpath, //this.shortPath(),
                 data: data.fullpath,
                 isOpen: true,
@@ -102,12 +106,12 @@ const storeDefinition = {
 
         addFavorite( { commit }, path ) {
             return $$$.api( 'api/projects/add-favorite-path', { path } )
-                .then( data => commit( 'PROJECT_DATA', data.json ) );
+                .then( data => commit( 'projectData', data.json ) );
         },
 
         removeFavorite( { commit }, path ) {
             return $$$.api( 'api/projects/remove-favorite-path', { path } )
-                .then( data => commit( 'PROJECT_DATA', data.json ) );
+                .then( data => commit( 'projectData', data.json ) );
         },
 
         fetchAdsByProject( { commit, dispatch }, project ) {
@@ -115,7 +119,7 @@ const storeDefinition = {
 
             return $$$.api( 'api/projects/list-ads', { projectDir: project.path } )
                 .then( data => {
-                    commit( 'ADS', data.ads );
+                    commit( 'ads', data.ads );
                     // dispatch( 'cookieCurrentSelection' );
                     
                     // if ( current.ad ) {
@@ -129,7 +133,7 @@ const storeDefinition = {
             cookie = cookie || getCookie( 'currentSelection' );
             
             //trace( "store@cookieCurrentSelection() ...", new Error() );
-            commit( 'CURRENT_SELECTION', cookie );
+            commit( 'currentSelection', cookie );
         }
     }
 };
@@ -152,4 +156,6 @@ function getCookie( key, def ) {
 
 //////////////////////////////////////////
 
-export default new Vuex.Store( storeDefinition );
+$$$.store = new Vuex.Store( store );
+
+export default $$$.store;

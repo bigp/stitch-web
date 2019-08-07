@@ -17,31 +17,28 @@
             </div>
         </div>
 
-        <!------------ FULLSIZE CONTAINER (for popups, modals, etc.) ---------------->
-        <div class="fullsize abs top-left" v-if="hasPopups">
-            <div class="popups modal-shadow top-left fullsize"></div>
-            <component v-for="(popup, i) in popups" :key="i" :is="popup.name" class="popup">
-            </component>
-        </div>
+        <popups-manager ref="popupManager"></popups-manager>
     </div>
 </template>
 
 <script>
+    $$$.EVENTS = require( '~constants' ).EVENTS;
+
     import * as ui from './ui/*';
     import * as views from './views/*';
     import * as popups from './popups/*';
-    import store, {menus} from './store.js';
+    import menuData from '../js/menu-data';
+    import appExtensions from '../js/app-extensions';
+
+    trace("App.vue ...");
 
 	export default {
         components: _.extend( {}, ui, views, popups ),
-        
-        store,
 
 		data() {
 			return {
-                menus: menus,
+                menus: menuData.menulist,
                 prevRoute: '',
-                popups: [],
 			}
         },
 
@@ -61,58 +58,60 @@
         },
 
         computed: {
-            ... Vuex.mapState('isLoading cookieCurrentSelection'),
+            ... Vuex.mapGetters('*'),
 
             currentViewName() {
                 return _.trim(this.$route.path, '/');
             },
 
             currentViewColors() {
+                const menus = this.menus;
                 const menu = menus.find(f => f.name.toLowerCase() == this.currentViewName);
-
-                if(!menu) return {};
-
                 const menuPrev = this.prevRoute && menus.find(f => f.name.toLowerCase() == this.prevRoute);
 
-                const clr = tinycolor(menu.color);
-                const clrPrev = menuPrev ? tinycolor(menuPrev.color) : clr;
-
-                // Return an object containing '--clr-main', etc.
-                // (CSS variables are prefixed with double hyphens "--")
-                return $$$.css.vars({
-                    'clr-main': clr.toString(),
-                    'clr-main-dark': clr.darken(10).toString(),
-                    'clr-main-lite': clr.lighten(30).toString(),
-                    'clr-prev': clrPrev.toString(),
-                    'clr-prev-dark': clrPrev.darken(10).toString(),
-                    'clr-prev-lite': clrPrev.lighten(30).toString(),
-                });
+                return menuData.toCSSVars(menu, menuPrev);
             },
 
-            hasPopups() {
-                return this.popups.length > 0;
+            popupMan() {
+                return this.$refs.popupManager;
             }
         },
 
         methods: {
-            ...Vuex.mapActions('fetchProjects'),
+            ...Vuex.mapActions('*'),
 
             main() {
                 //Make sure the background gradient "curtains" is hidden:
                 TweenMax.set('.curtain', {alpha:0});
 
-                const _this = this;
-                
                 //First thing when the app launches, get the project listing:
                 this.fetchProjects()
-                    .then( res => trace('app.vue@main()', res));
+                    .then( data => {
+                        trace.OK('app.vue@main() fetch done.', data);
+                    })
+                    .catch( err => {
+                        trace.FAIL('app.vue@main() fetch failed!');
+                        trace(err);
+                    });
 
                 // DEBUG: Make the header-click clear the browser & the CLI's console.
-                $('.top-bar .my-title').click(() => {
-                    $$$.api('/clear-cli');
-                    traceClear();
-                })
+                $('.top-bar .my-title').click(() => this.clearConsole());
             },
+
+            clearConsole() {
+                $$$.api('/clear-cli');
+                traceClear();
+                trace();
+                TweenMax.from('.top-bar .my-title', 0.5, {y: 10, ease:Elastic.easeOut});
+            }
+		},
+    }
+
+    $(window).addEvents({
+        'resize': () => $$$.app.popupMan.centerPopups(),
+        '@escape': () => $$$.app.popupMan.dismissPopup(),
+        '@`': () => $$$.app.clearConsole(),
+    });
 
                 // _this.fetchProjects()
                 //     .then( () => {
@@ -136,34 +135,13 @@
             //             $$$.emit('@projects-list-loaded', data);
             //         } );
             // },
-
-            addPopup(popup, cb) {
-                if(cb) popup.cb = cb;
-
-                this.popups.push( popup );
-
-                requestAnimationFrame(() => {
-                    this.centerPopups();
-                    TweenMax.from('.popup, .modal-shadow', 0.3, {alpha:0});
-                });
-            },
-
-            dismissPopup(answer) {
-                var popup = this.popups.pop();
-                if(!popup) return;
-
-                popup.cb && popup.cb( answer );
-            },
-
-            centerPopups() {
-                $('.popup').center();
-            }
-		},
-    }
-
-    $(window).addEvents({
-        'resize': () => $$$.app.centerPopups(),
-        '@escape': () => $$$.app.dismissPopup(),
-    });
     
+    if(preloader) {
+        setTimeout(() => {
+            trace('Kill preloader spinner...');
+            $('.preloader-container').remove();
+            preloader.kill();
+        }, 500);
+        
+    }
 </script>

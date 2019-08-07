@@ -1,6 +1,10 @@
 module.exports = class PluginAPI {
     init() {
+        const imagePath = $$$.paths.private + '/data/images/';
+
         this.routes = {
+            '/images': imagePath,
+
             '/api/*'( req, res, next ) {
                 trace( "API CALLED: " + req.fullUrl() );
                 next();
@@ -13,7 +17,6 @@ module.exports = class PluginAPI {
                 setTimeout( traceClear, 100 );
                 res.send( { ok: 'cleared CLI.' } );
             }
-
         };
     }
 

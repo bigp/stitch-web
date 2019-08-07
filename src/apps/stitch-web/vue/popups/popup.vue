@@ -2,7 +2,7 @@
     <div>
         <i class="header-container">
             <i class="heading noclick">- {{title}} -</i>
-            <btn icon="close" color="#d00" @click="$app.dismissPopup()"></btn>
+            <btn icon="close" color="#d00" @click="$app.popupMan.dismissPopup()"></btn>
         </i>
         <div class="content">
             <slot></slot>
@@ -35,13 +35,13 @@
         
         mounted() {
             //Create *CIRCULAR-REFERENCE* between the popup-object and the Vue popup child component:
-            const popupObj = this.$app.popups.last();
+            const popupObj = this.$app.popupMan.popups.last();
             popupObj.$vue = this.childComponent;
             this.childComponent.$popup = popupObj;
         },
 
         updated() {
-            $$$.app.centerPopups();
+            $$$.app.popupMan.centerPopups();
         }
     }
 

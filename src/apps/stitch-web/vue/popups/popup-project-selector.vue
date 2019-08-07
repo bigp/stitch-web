@@ -1,64 +1,160 @@
 <template>
     <popup title="Project Selector">
-        <div class="padded">
-            <!-- ?????????? -->
+        <div class="control-bar">
+            <!-- inline-block -->
+            <i class="control-item">Client:
+                <b-form-select v-model="selectedClientName" :options="clientNames"></b-form-select>
+            </i>
+
+            <!-- <i class="control-item"><b>Sort by:</b>
+                <b-form-select v-model="sortProjectsBy" :options="sortProjectsOptions"></b-form-select>
+            </i> -->
+
+            <b-dropdown id="dd-project-command" text="Commands...">
+                <b-dropdown-item v-for="(cmd, c) in projectCommands" :key="c" href="#" @click="cmd.cb()">
+                    <i v-if="cmd.icon" :class="'fa fa-' + cmd.icon">&nbsp;</i>{{cmd.name}}
+                </b-dropdown-item>
+            </b-dropdown>
+        </div>
+
+        <div class="scroll-list">
+            <div v-for="(camp, c) in sortCampaigns(campaigns)" :key="c"
+                class="campaign-card">
+                <i class="campaign-name nowrap">
+                    <i>{{camp.name}}</i>
+                    <i class="mini-controls">
+                        <btn icon="plus" color="#0a0" :title="'Add a new project to ' + camp.name"
+                            @click="onAddProjectToCampaign(camp)"></btn>
+                    </i>
+                </i>
+                <i class="campaign-logo"><img :src="camp.logo || '/images/logo_' + camp.name + '.jpg'" /></i>
+                <ul class="campaign-projects">
+                    <li v-for="(project, p) in sortProjects(camp.projects)" :key="p"
+                        class="project-item nowrap">
+                        <input type="checkbox" v-model="project.isChecked">
+                        <i @click="onProjectClicked(project)">{{project.name}} </i>
+                    </li>
+                </ul>
+            </div>
         </div>
 
         <template #button-bar>
-            <btn @click="onConfirm()"
+            <!-- <btn @click="$app.popupMan.dismissPopup(selectedPaths)"
                 icon="check"
-                color="#080">Confirm</btn>
+                color="#080">Confirm</btn> -->
         </template>
     </popup>
         
 </template>
 
 <script>
+
+var _this;
+
 export default {
     props: [],
 
     data() {
         return {
-            
+            selected: {
+                client:0,
+                sortProjects:0,
+            },
+
+            sortProjectsOptions: ["Alphabetically", "Recently Created", "Recently Accessed"],
+            projectCommands: [
+                {icon: 'cog', name: 'a', cb() { trace('a' )}},
+                {icon: 'cog', name: 'b', cb() { trace('b' )}},
+                {icon: 'cog', name: 'c', cb() { trace('c' )}},
+                {icon: 'image', name: 'Open Logos folder...', cb() { _this.onOpenLogos() }},
+            ]
         }
     },
     
     computed: {
-        ...Vuex.mapGetters('projectData driveLetters treeData'),
+        ...Vuex.mapGetters('*'),
 
-        isPathDeepEnough() {
-            const treeData = this.treeData;
-            if(!treeData || !treeData.data) return false;
-            return _.count(treeData.data, '/') > 1;
+        clientNames() {
+            return _.keys(this.catalog) || [];
         },
 
-        trimmedFullPath() {
-            const treeData = this.treeData;
-            if(!treeData || !treeData.data) return '';
-            return treeData.data.before('/', false, true).before('/', false, true);
+        campaigns() {
+            return _.get(this.catalog, this.selectedClientName + ".campaigns") || {};
         },
 
-        isCurrentFavorite() {
-            if(!this.projectData || !this.projectData.favoritePaths) return false;
-            
-            return this.projectData.favoritePaths.has(this.treeData.data);
+        selectedClientName: {
+            get() {
+                return this.clientNames[this.selected.client];
+            },
+
+            set(value) {
+                this.selected.client = this.clientNames.indexOf(value);
+            }
         },
 
-        isAllChecked() {
-            const kids = this.treeData && this.treeData.children ? this.treeData.children : [];
-            if(!kids.length) return false;
+        sortProjectsBy: {
+            get() {
+                return this.sortProjectsOptions[this.selected.sortProjects];
+            },
 
-            const uncheckedItem = kids.find( item => !item.isChecked );
-            return uncheckedItem == null;
+            set(value) {
+                this.selected.sortProjects = this.sortProjectsOptions.indexOf(value);
+            }
         }
     },
 
     methods: {
-        //...Vuex.mapActions("sendBrowsePath addFavorite removeFavorite"),
+        ...Vuex.mapActions("*"),
+        
+        sortCampaigns(obj) {
+            return _.keys(obj).map( key => _.extend({name: key}, obj[key]) );
+        },
+
+        sortProjects(arr) {
+            if(arr.length>0 && !('isChecked' in arr[0])) {
+                arr.forEach(a => a.isChecked = false);
+            }
+
+            return _.sortBy(arr, ['name']);
+        },
+
+        onProjectClicked(project) {
+            trace(project);
+        },
+
+        onOpenLogos() {
+            $$$.api('/api/projects/open-logo-folder')
+                .then( data => {
+                    trace('Open ok?', data);
+                });
+        },
+
+        onAddProjectToCampaign(camp) {
+            const projectNames = camp.projects.map(p => p.name).sort();
+            const projectLastNumber = parseInt(projectNames.pop().split('_')[0], 10);
+            const projectNextNumber = String(projectLastNumber + 1).padStart('3', '0');
+            
+            $$$.prompt({
+                    title: `Add <b>${camp.name}</b> Project`,
+                    message: `What is the name of your new project?`,
+                    answer: `${projectNextNumber}_PROJECTNAME`,
+                })
+            //     .then($$$.prompt.defaultSkip)
+            //     .then(answer => $$$.api('/api/projects/add-project', {campaign: _.omit(camp, 'projects'), projectName: answer } ) )
+            //     .then(data => {
+            //         trace.OK('Added ok!');
+            //         trace(data);
+            //     })
+            //     .catch($$$.prompt.defaultErr);
+        }
     },
     
     mounted() {
-        
+        _this = this;
+
+        // setTimeout(() => {
+        //     this.onAddProjectToCampaign(this.campaigns['CMHR']);
+        // }, 250);
     }
 }
 </script>

@@ -7,6 +7,8 @@ const defaultData = {
     favoritePaths: []
 };
 
+const regexProjectName = /([0-9]+_[^\/]*)/gi;
+
 const PROJECT_STATUS = {
     _01_IMPORTED: 1,
     _02_WORKING: 2,
@@ -26,6 +28,7 @@ module.exports = class PluginProjects {
 
         function sendJSONData( res, extra ) {
             const data = _.merge( extra, { json: _this.jsonHandler.data, driveLetters: driveLetters } );
+            
             res.send( data );
         }
 
@@ -48,17 +51,27 @@ module.exports = class PluginProjects {
                 },
 
                 'post::/browse-path'( req, res, next ) {
-                    const fullpath = req.body.path || '';
+                    let fullpath = req.body.path || '';
+
+                    if ( fullpath.has( 'undefined' ) ) {
+                        fullpath = fullpath.replace( /undefined/g, '' )
+                        
+                        trace( 'fullpath: ' + fullpath );
+                        
+
+                        return $$$.resError( res, 'Found undefined' );
+                    }
                     
                     pathExplorer(fullpath)
                         .then( list => {
+
                             res.send( {
                                 list: list,
                                 letter: req.body.letter,
                                 fullpath: fullpath
                             } );
                         } )
-                        .catch( err => res.status( 404 ).send( 'Error getting directory at path: ' + fullpath ) );
+                        .catch( err => $$$.resError( res, 'Error getting directory at path: ' + fullpath + '\n' + err ) );
                 },
 
                 'post::/add-favorite-path'( req, res, next ) {
@@ -108,6 +121,7 @@ module.exports = class PluginProjects {
                     
                     //projects;
                     Promise.all( dirs.map( f => _this.importProject( f, catalog ) ) )
+                        //.then( () => _this.jsonHandler.save())
                         .then( () => {
                             traceJSON( catalog );
                             sendJSONData( res, { ok: 'import ok', catalog: catalog } );
@@ -135,11 +149,33 @@ module.exports = class PluginProjects {
 
                 'get::/load-ad'( req, res, next ) {
                     const adHTML = req.query.html.mustEndWith( '.html' );
-                    
+
                     if ( !$$$.fs.existsSync( adHTML ) ) return $$$.resError( res, 'HTML file does not exists: ' + adHTML );
-                    
+
                     res.sendFile( adHTML );
-                }
+                },
+
+                'get::/open-logo-folder'( req, res, next ) {
+                    const logosPath = $$$.paths.private + '/data/images';
+
+                    $$$.opn( logosPath );
+
+                    res.send( {ok: 'Opened logos folder.', path: logosPath} );
+                },
+
+                'post::/add-project'( req, res, next ) {
+                    const campaign = req.body.campaign;
+                    const projectName = req.body.projectName;
+
+                    if ( !regexProjectName.test( projectName ) ) {
+                      return $$$.resError(res, 'Must use project name convention (3-digits, _, etc.)')  
+                    }
+
+                    //res.send
+
+                    //$$$.fs.mkdirp();
+                    res.send( { ok: 'project added: ' +req.body.projectName } );
+                },
             },
 
             '*'( req, res, next ) {
@@ -149,7 +185,6 @@ module.exports = class PluginProjects {
     }
 
     importProject( dir, catalog ) {
-        const regexProjectName = /([0-9]+_[^\/]*)/gi;
         const clean = s => _.trim( s, '_/' );
         const toMatchingProject = f => ( { path: f, match: f.match( regexProjectName ) } );
         const toCatalogEntry = p => {
@@ -158,8 +193,15 @@ module.exports = class PluginProjects {
             const campaignName = clean(pathSplit.pop());
             const clientName = clean(pathSplit.pop());
 
-            const client = _.getOrCreate( catalog, clientName, { campaigns: {} } );
-            const campaign = _.getOrCreate( client.campaigns, campaignName, { projects: [] } );
+            const client = _.getOrCreate( catalog, clientName, {
+                campaigns: {},
+                path: pathSplit.concat([clientName]).join('/'),
+            } );
+
+            const campaign = _.getOrCreate( client.campaigns, campaignName, {
+                path: pathSplit.concat([clientName, campaignName]).join('/'),
+                projects: []
+            } );
 
             //const projects = 
             // Populate the campaign's list of projects:

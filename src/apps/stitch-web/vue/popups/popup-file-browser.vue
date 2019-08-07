@@ -1,43 +1,43 @@
 <template>
     <popup title="File Browser">
-        <div class="padded">
-            <header-list title="Favorites:" icon="star"
-                @item-click="onClickFavorite"
-                :headerCondition="isPathDeepEnough"
-                :itemSelector="(value) => treeData.data == value"
-                :itemRenderer="(value) => shortPath(value)"
-                :items="projectData.favoritePaths">
+        <header-list title="Favorites:" icon="star"
+            @item-click="onClickFavorite"
+            :headerCondition="isPathDeepEnough"
+            :itemSelector="(value) => treeData.data == value"
+            :itemRenderer="(value) => shortPath(value)"
+            :items="favoritePaths">
 
-                <btn @click="onAddFavorite()"
-                    icon="plus"
-                    color="#ea2"
-                    v-show="!isCurrentFavorite"></btn>
+            <btn @click="onAddFavorite()"
+                icon="plus"
+                color="#ea2"
+                v-show="!isCurrentFavorite"></btn>
 
-                <btn @click="onRemoveFavorite()"
-                    icon="trash"
-                    color="#e20"
-                    v-show="isCurrentFavorite"></btn>
+            <btn @click="onRemoveFavorite()"
+                icon="trash"
+                color="#e20"
+                v-show="isCurrentFavorite"></btn>
 
-            </header-list>
+        </header-list>
 
-            <header-list title="Select:" icon="check-square"
-                @item-click="onClickFavorite"
-                :itemSelector="(value) => treeData.data == value"
-                :itemRenderer="(value) => shortPath(value)"
-                :items="[]">
+        <header-list title="Select:" icon="check-square"
+            @item-click="onClickFavorite"
+            :itemSelector="(value) => treeData.data == value"
+            :itemRenderer="(value) => shortPath(value)"
+            :items="[]">
 
-                <btn @click="onSelectAll()"
-                    icon="check-square"
-                    color="#24e">All</btn>
+            <btn @click="onSelectAll()"
+                icon="check-square"
+                color="#24e">All</btn>
 
-                <btn @click="onSelectNone()"
-                    icon="square"
-                    color="#24e">None</btn>
-            </header-list>
+            <btn @click="onSelectNone()"
+                icon="square"
+                color="#24e">None</btn>
+        </header-list>
 
+        <div class="inline-block padded">
             <btn @click="onPathClicked(trimmedFullPath)"
-                icon="arrow-up">Up</btn>
-    
+            icon="arrow-up">Up</btn>
+
             <btn v-for="(letter, key) in driveLetters"
                 @click="onSelectedDriveLetter(letter)"
                 :key="key"
@@ -46,14 +46,19 @@
                 class="drive-letter">{{letter}}:</btn>
         </div>
 
+        
+
+             <!----------------------------------->
+
         <tree-item class="file-explorer"
             :item="treeData"
             :isSelectable="isPathDeepEnough"
             @item-click="onPathClicked">
         </tree-item>
+        
 
         <template #button-bar>
-            <btn @click="onConfirm()"
+            <btn @click="$app.popupMan.dismissPopup(selectedPaths)"
                 icon="check"
                 color="#080">Confirm</btn>
         </template>
@@ -72,7 +77,7 @@ export default {
     },
     
     computed: {
-        ...Vuex.mapGetters('projectData driveLetters treeData'),
+        ...Vuex.mapGetters('*'),
 
         isPathDeepEnough() {
             const treeData = this.treeData;
@@ -87,9 +92,9 @@ export default {
         },
 
         isCurrentFavorite() {
-            if(!this.projectData || !this.projectData.favoritePaths) return false;
+            if(!this.favoritePaths) return false;
             
-            return this.projectData.favoritePaths.has(this.treeData.data);
+            return this.favoritePaths.has(this.treeData.data);
         },
 
         isAllChecked() {
@@ -98,11 +103,15 @@ export default {
 
             const uncheckedItem = kids.find( item => !item.isChecked );
             return uncheckedItem == null;
+        },
+
+        selectedPaths() {
+            return this.treeData.children.filter(f => f.isChecked);
         }
     },
 
     methods: {
-        ...Vuex.mapActions("sendBrowsePath addFavorite removeFavorite"),
+        ...Vuex.mapActions("*"),
 
         onSelectedDriveLetter(letter) {
             const treeData = this.treeData || {};
@@ -141,12 +150,6 @@ export default {
             this.removeFavorite( item.path ).catch( err => this.onError(err, item) );
         },
 
-        onConfirm() {
-            var selected = this.treeData.children.filter(f => f.isChecked);
-            
-            this.$app.dismissPopup(selected);
-        },
-
         shortPath(fav) {
             return _.trim(fav, '/').split('/').pop();
         },
@@ -165,15 +168,38 @@ export default {
 
         onSelectNone() {
             this.forAllItems(i => i.isChecked = false);
+        },
+
+        initializeTreeView() {
+            if(this.isFirstLoad) {
+                trace.WARN("Still loading...");
+                return;
+            }
+            const favs = this.favoritePaths;
+            
+            if(!favs || !favs.length) {
+                trace.INFO('No favs, trying the 1st drive-letter...');
+                if(!this.driveLetters || !this.driveLetters.length) {
+                    trace.WARN("driveLetters empty / not ready!");
+                } else {
+                    trace.OK('Trying with drive-letter: ' + this.driveLetters[0]);
+                    this.onPathClicked(this.driveLetters[0] + ':');
+                }
+                return;
+            }
+
+            this.onPathClicked(favs[0]);
+        }
+    },
+
+    watch: {
+        'driveLetters'(current, prev) {
+            this.initializeTreeView();
         }
     },
     
     mounted() {
-        const favs = this.projectData.favoritePaths;
-
-        if(!favs || !favs.length) return this.onPathClicked(this.driveLetters[0] + ':');
-
-        this.onPathClicked(favs[0]);
+        this.initializeTreeView();
     }
 }
 </script>
