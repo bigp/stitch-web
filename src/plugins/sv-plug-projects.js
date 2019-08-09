@@ -41,7 +41,7 @@ module.exports = class PluginProjects {
                     if ( !data.clients ) data.clients = [];
 
                     _this.jsonHandler.save()
-                        .then( () => sendJSONData( res, {ok: 'list ok.'} ) );
+                        .then( () => sendJSONData( res, { ok: 'list ok.' } ) );
                 },
                 
                 '/open-project'( req, res, next ) {
@@ -171,10 +171,8 @@ module.exports = class PluginProjects {
                       return $$$.resError(res, 'Must use project name convention (3-digits, _, etc.)')  
                     }
 
-                    //res.send
-
                     //$$$.fs.mkdirp();
-                    res.send( { ok: 'project added: ' +req.body.projectName } );
+                    res.send( { ok: 'project added: ' + req.body.projectName } );
                 },
             },
 

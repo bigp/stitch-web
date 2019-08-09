@@ -59,16 +59,27 @@ export default {
         },
 
         prompt(opts) {
+            //If opts is a String, assume it's the prompt's message:
             if(_.isString(opts)) opts = {message: opts};
 
-            const data = this.promptData = _.defaults(opts, {title: 'Prompt', answer:null});
+            //Fill-in some default values if nothing else is supplied:
+            const data = this.promptData = _.defaults(opts, {title: 'Prompt', answer:null, useDefaultHandlers:true});
 
-            data.promise = new Promise((_then, _catch) => {
+            let prom = new Promise((_then, _catch) => {
                 data._then = _then;
                 data._catch = _catch;
 
                 this.$bvModal.show('prompt-master');
             });
+
+            if(data.useDefaultHandlers) {
+                //This handler throws a 'skip' in the promise-chain if an invalid / close / exit event is triggered:
+                prom = prom
+                    .then(this.defaultSkip)
+                    .catch(this.defaultErr);
+            }
+
+            data.promise = Swear(prom);
 
             return data.promise;
         },
@@ -76,16 +87,37 @@ export default {
         onPromptDismissed(e) {
             const data = this.promptData;
             const answer = e.trigger=='ok' ? data.answer : null;
-            data._then(answer);
 
-            this.promptData = {};
-            //this.promptData.cb && this.promptData.cb(answer);
+            data._then(answer);
+            
+            // data._then = null;
+            // data._catch = null;
+            // data.promise = null;
+            
+            this.promptData = {}; // Clears the entire promptData object
+        },
+
+        defaultSkip( answer ) {
+            if ( !answer ) throw 'skip';
+
+            trace("Answer: ", answer);
+            return answer;
+        },
+
+        defaultErr( err ) {
+            if ( err === 'skip' ) return trace.OK('skip...');
+
+            trace.FAIL( _.isString( err ) ? err : err.statusText );
         }
     },
 
     mounted() {
         $$$.onLater( $$$.EVENTS.STYLE_CHANGED, -2, this.centerPopups);
     }
+}
+
+$$$.prompt = function () {
+    return $$$.app.popupMan.prompt.apply( $$$.app.popupMan, arguments );
 }
 
 </script>

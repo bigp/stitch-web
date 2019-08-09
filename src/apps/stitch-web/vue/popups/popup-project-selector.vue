@@ -7,10 +7,10 @@
             </i>
 
             <!-- <i class="control-item"><b>Sort by:</b>
-                <b-form-select v-model="sortProjectsBy" :options="sortProjectsOptions"></b-form-select>
+                <b-form-select v-model="projectsSortType" :options="sortProjectsOptions"></b-form-select>
             </i> -->
 
-            <b-dropdown id="dd-project-command" text="Commands...">
+            <b-dropdown id="dd-project-command" text="Project &amp; Campaign Commands...">
                 <b-dropdown-item v-for="(cmd, c) in projectCommands" :key="c" href="#" @click="cmd.cb()">
                     <i v-if="cmd.icon" :class="'fa fa-' + cmd.icon">&nbsp;</i>{{cmd.name}}
                 </b-dropdown-item>
@@ -42,6 +42,9 @@
             <!-- <btn @click="$app.popupMan.dismissPopup(selectedPaths)"
                 icon="check"
                 color="#080">Confirm</btn> -->
+                <i class="status" > <!-- v-if="status" v-html="status" -->
+
+                </i>
         </template>
     </popup>
         
@@ -63,10 +66,8 @@ export default {
 
             sortProjectsOptions: ["Alphabetically", "Recently Created", "Recently Accessed"],
             projectCommands: [
-                {icon: 'cog', name: 'a', cb() { trace('a' )}},
-                {icon: 'cog', name: 'b', cb() { trace('b' )}},
-                {icon: 'cog', name: 'c', cb() { trace('c' )}},
-                {icon: 'image', name: 'Open Logos folder...', cb() { _this.onOpenLogos() }},
+                {icon: 'plus', name: 'Add Campaign', cb: () => this.onAddCampaign() },
+                {icon: 'image', name: 'Open Logos folder...', cb: () => this.onOpenLogos()},
             ]
         }
     },
@@ -82,6 +83,15 @@ export default {
             return _.get(this.catalog, this.selectedClientName + ".campaigns") || {};
         },
 
+        projects() {
+            var allProjects = [];
+            _.forOwn(this.campaigns, camp => {
+               allProjects.push.apply(allProjects, camp.projects);
+            });
+
+            return allProjects;
+        },
+
         selectedClientName: {
             get() {
                 return this.clientNames[this.selected.client];
@@ -92,15 +102,23 @@ export default {
             }
         },
 
-        sortProjectsBy: {
+        projectsSortType: {
             get() {
-                return this.sortProjectsOptions[this.selected.sortProjects];
+                return this.sortProjectsOptions[this.selected.sortProjects] || [];
             },
 
             set(value) {
                 this.selected.sortProjects = this.sortProjectsOptions.indexOf(value);
             }
-        }
+        },
+
+        // status() {
+        //     const selectedProjects = this.projects.filter(p => p.isChecked);
+            
+        //     //trace("projects?", this.projects);
+            
+        //     return selectedProjects.length==0 ? '' : selectedProjects.length + ' projects selected.';
+        // }
     },
 
     methods: {
@@ -131,7 +149,7 @@ export default {
 
         onAddProjectToCampaign(camp) {
             const projectNames = camp.projects.map(p => p.name).sort();
-            const projectLastNumber = parseInt(projectNames.pop().split('_')[0], 10);
+            const projectLastNumber = !projectNames.length ? -1 : parseInt(projectNames.pop().split('_')[0], 10);
             const projectNextNumber = String(projectLastNumber + 1).padStart('3', '0');
             
             $$$.prompt({
@@ -139,22 +157,32 @@ export default {
                     message: `What is the name of your new project?`,
                     answer: `${projectNextNumber}_PROJECTNAME`,
                 })
-            //     .then($$$.prompt.defaultSkip)
-            //     .then(answer => $$$.api('/api/projects/add-project', {campaign: _.omit(camp, 'projects'), projectName: answer } ) )
-            //     .then(data => {
-            //         trace.OK('Added ok!');
-            //         trace(data);
-            //     })
-            //     .catch($$$.prompt.defaultErr);
+                .then( proceed => trace("Proceed?", proceed) )
+                // .then(answer => $$$.api('/api/projects/add-project', {campaign: _.omit(camp, 'projects'), projectName: answer } ) )
+                // .then(data => {
+                //     trace.OK('Added ok!');
+                //     trace(data);
+                // });
+        },
+
+        onAddCampaign() {
+            const clientName = this.selectedClientName;
+            const client = this.catalog[this.selectedClientName];
+            //client
+            const ask = $$$.prompt({
+                    title: `Add New Campaign / Brand`,
+                    message: `What is the name of your new campaign?`,
+                });
+
+            const ask2 = ask.then( ok => trace('OK...', ok));
+
+            trace(ask, ask2);
+                
         }
     },
     
     mounted() {
-        _this = this;
 
-        // setTimeout(() => {
-        //     this.onAddProjectToCampaign(this.campaigns['CMHR']);
-        // }, 250);
     }
 }
 </script>

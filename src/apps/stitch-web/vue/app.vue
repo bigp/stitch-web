@@ -28,10 +28,43 @@
     import * as views from './views/*';
     import * as popups from './popups/*';
     import menuData from '../js/menu-data';
-    import appExtensions from '../js/app-extensions';
+    import Swear from '../js/swear';
 
-    trace("App.vue ...");
+    ///////////////////////////////////////////////////////////
 
+    function test() {
+        console.groupEnd();
+
+        const obj = {};
+        const time = $$$.now();
+        const toSecs = value => (value/1000).toFixed(3) + 's';
+
+        var sw = Swear(obj)
+            .then(() => trace('Hello Swear!', toSecs($$$.now() - time) ))
+            .then(() => {
+                [1,2,3,4,5].forEach(num => {
+                    trace(num);
+                    if(num===3) Swear.continue(num);
+                });
+
+                return 123;
+            })
+            .then(lastValue => {
+                trace("Last value: " + lastValue);
+
+                Swear.break('important break!');
+
+                return 456;
+            })
+            .break(reason => trace.WARN("We broke because of:", reason))
+            .then(value => trace("Should be 456 == " + value));
+
+        setTimeout(() => obj.resolve(), 1000);
+    }
+
+    ///////////////////////////////////////////////////////////
+
+    
 	export default {
         components: _.extend( {}, ui, views, popups ),
 
@@ -88,6 +121,8 @@
                 this.fetchProjects()
                     .then( data => {
                         trace.OK('app.vue@main() fetch done.', data);
+
+                        test();
                     })
                     .catch( err => {
                         trace.FAIL('app.vue@main() fetch failed!');
