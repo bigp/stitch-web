@@ -163,6 +163,8 @@ module.exports = class PluginProjects {
                     res.send( {ok: 'Opened logos folder.', path: logosPath} );
                 },
 
+                /////////////////////////////////////////
+
                 'post::/add-project'( req, res, next ) {
                     const campaign = req.body.campaign;
                     const projectName = req.body.projectName;
@@ -174,9 +176,20 @@ module.exports = class PluginProjects {
                     //$$$.fs.mkdirp();
                     res.send( { ok: 'project added: ' + req.body.projectName } );
                 },
+
+                'post::/add-campaign'( req, res, next ) {
+                    const campaign = req.body.campaignName;
+
+                    if ( !campaign ) {
+                        return $$$.resError( res, 'Must provide a campaign name' );
+                    }
+
+                    //$$$.fs.mkdirp();
+                    res.send( { ok: 'project added: ' + req.body.projectName } );
+                },
             },
 
-            '*'( req, res, next ) {
+            'all::/api/*'( req, res, next ) {
                 $$$.resError(res, "API ERROR" );
             },
         };

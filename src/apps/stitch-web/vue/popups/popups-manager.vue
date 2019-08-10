@@ -59,55 +59,46 @@ export default {
         },
 
         prompt(opts) {
+            const stack = new Error();
+
             //If opts is a String, assume it's the prompt's message:
             if(_.isString(opts)) opts = {message: opts};
 
+            this.$bvModal.show('prompt-master');
+
             //Fill-in some default values if nothing else is supplied:
             const data = this.promptData = _.defaults(opts, {title: 'Prompt', answer:null, useDefaultHandlers:true});
-
-            let prom = new Promise((_then, _catch) => {
-                data._then = _then;
-                data._catch = _catch;
-
-                this.$bvModal.show('prompt-master');
-            });
+            data.swear = Swear(data);
 
             if(data.useDefaultHandlers) {
                 //This handler throws a 'skip' in the promise-chain if an invalid / close / exit event is triggered:
-                prom = prom
-                    .then(this.defaultSkip)
-                    .catch(this.defaultErr);
+                data.swear.then( answer => {
+                    if ( !answer ) Swear.break('Did not answer / pressed close.');
+                    return answer;
+                })
+                .break( reason => {
+                    trace("Break popup because: " + reason );
+                    trace( stack );
+                })
+                .catch( err => {
+                    trace.FAIL( _.isString( err ) ? err : err.statusText );
+                });
             }
 
-            data.promise = Swear(prom);
-
-            return data.promise;
+            return data.swear;
         },
 
         onPromptDismissed(e) {
             const data = this.promptData;
             const answer = e.trigger=='ok' ? data.answer : null;
 
-            data._then(answer);
+            data.swear.resolve(answer);
             
             // data._then = null;
             // data._catch = null;
             // data.promise = null;
             
             this.promptData = {}; // Clears the entire promptData object
-        },
-
-        defaultSkip( answer ) {
-            if ( !answer ) throw 'skip';
-
-            trace("Answer: ", answer);
-            return answer;
-        },
-
-        defaultErr( err ) {
-            if ( err === 'skip' ) return trace.OK('skip...');
-
-            trace.FAIL( _.isString( err ) ? err : err.statusText );
         }
     },
 

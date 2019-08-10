@@ -168,16 +168,12 @@ export default {
         onAddCampaign() {
             const clientName = this.selectedClientName;
             const client = this.catalog[this.selectedClientName];
-            //client
-            const ask = $$$.prompt({
+
+            $$$.prompt({
                     title: `Add New Campaign / Brand`,
                     message: `What is the name of your new campaign?`,
-                });
-
-            const ask2 = ask.then( ok => trace('OK...', ok));
-
-            trace(ask, ask2);
-                
+                })
+                .then( campName =>  $$$.api('/api/projects/add-campaign', {campaignName: campName, client: this.selectedClientName} ));
         }
     },
     
